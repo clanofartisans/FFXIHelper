@@ -571,6 +571,239 @@
 
 #HXI_tabs_equipsets_shown.tabcontent-loading .HXI_gs_layout { pointer-events: none; }
 
+/* ---------- Characters tab (same FFXI-window look) ---------- */
+
+.HXI_gs_chars #HXI_equipsets_charSelect {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    width: auto;
+    height: auto;
+    text-align: left;
+    overflow: visible;
+}
+
+.HXI_gs_chars #HXI_equipsets_charactersButtonsList {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+}
+
+.HXI_gs_chars #HXI_equipsets_charSelectMerits { display: block; width: auto; height: auto; overflow: visible; }
+
+/* buttons: shared shape */
+.HXI_gs_chars .HXI_charButton,
+.HXI_gs_chars .HXI_newCharButton,
+.HXI_gs_chars .HXI_editCharButton,
+.HXI_gs_chars .HXI_deleteCharButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 40px;
+    min-width: 44px;
+    margin: 0;
+    padding: 0 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gs-text);
+    background: linear-gradient(180deg, #5b6386, #363c56);
+    border: 1px solid var(--gs-edge);
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.65);
+    stroke: currentColor;
+    cursor: pointer;
+    transition: filter 0.12s ease, transform 0.05s ease;
+}
+
+.HXI_gs_chars .HXI_charButton:hover,
+.HXI_gs_chars .HXI_newCharButton:hover,
+.HXI_gs_chars .HXI_editCharButton:hover,
+.HXI_gs_chars .HXI_deleteCharButton:hover {
+    color: var(--gs-text);
+    background: linear-gradient(180deg, #5b6386, #363c56);
+    stroke: currentColor;
+    filter: brightness(1.2);
+}
+
+.HXI_gs_chars .HXI_charButton:active,
+.HXI_gs_chars .HXI_newCharButton:active,
+.HXI_gs_chars .HXI_editCharButton:active,
+.HXI_gs_chars .HXI_deleteCharButton:active { transform: translateY(1px); }
+
+.HXI_gs_chars .HXI_newCharButton svg { width: 12px; height: 12px; stroke-width: 2px; fill: none; }
+
+/* primary (gold): New / Save / selected character */
+.HXI_gs_chars .HXI_newCharButton,
+.HXI_gs_chars .HXI_charButtonselected,
+.HXI_gs_chars .HXI_charButtonselected:hover {
+    color: #2a2000;
+    background: linear-gradient(180deg, #f4e6a6, #b9963a);
+    border-color: #f7edc4;
+    text-shadow: none;
+}
+
+.HXI_gs_chars .HXI_newCharButton:hover {
+    color: #2a2000;
+    background: linear-gradient(180deg, #f4e6a6, #b9963a);
+}
+
+.HXI_gs_chars .HXI_newCharButton_Grayed,
+.HXI_gs_chars .HXI_newCharButton_Grayed:hover {
+    color: var(--gs-text);
+    background: linear-gradient(180deg, #6b7280, #3f4451);
+    border-color: var(--gs-line);
+    text-shadow: none;
+}
+
+.HXI_gs_chars .HXI_editCharButtonSelected { background: linear-gradient(180deg, #7f95e6, #5468c4); }
+.HXI_gs_chars .HXI_deleteCharButton { color: #ffd0d0; background: linear-gradient(180deg, #b34a4a, #7a2b2b); border-color: #e8a0a0; }
+.HXI_gs_chars .HXI_deleteCharButton:hover { color: #fff; background: linear-gradient(180deg, #b34a4a, #7a2b2b); }
+.HXI_gs_chars .HXI_charButton_default { box-shadow: 0 0 0 2px rgba(166, 245, 160, 0.55), 0 2px 6px rgba(0, 0, 0, 0.3); }
+
+.HXI_gs_chars .HXI_charButton:disabled,
+.HXI_gs_chars .HXI_newCharButton:disabled,
+.HXI_gs_chars .HXI_editCharButton:disabled {
+    color: var(--gs-muted);
+    background: linear-gradient(180deg, #4b5060, #363a47);
+    border-color: var(--gs-line);
+    opacity: 0.6;
+}
+
+.HXI_gs_chars .HXI_equipsets_charSelectOptionsMenu {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: auto;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.HXI_gs_chars .HXI_deleteCharButton { margin: 0 0 0 auto; }
+
+/* details: name / race / default */
+.HXI_gs_chars .HXI_charFields { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+
+.HXI_gs_chars .HXI_charField {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.HXI_gs_chars .HXI_charLabel { font-weight: 700; color: var(--gs-gold); }
+
+.HXI_gs_chars select.HXI_dynamiccontent_customDropDown { flex: 0 0 auto; width: 140px; }
+
+.HXI_gs_chars input.HXI_dynamiccontent_charNameInput {
+    flex: 1 1 200px;
+    min-width: 0;
+    height: 40px;
+    margin: 0;
+    padding: 0 12px;
+    font-size: 16px;
+    color: #fff;
+    background: #1c2030;
+    border: 1px solid #8d968f;
+    border-radius: 8px;
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.HXI_gs_chars input.HXI_dynamiccontent_charNameInput::placeholder { color: var(--gs-muted); opacity: 0.8; }
+
+.HXI_gs_chars .HXI_dynamiccontent_addCharDefaultLabel { margin: 0; flex: 0 0 45px; }
+.HXI_gs_chars .HXI_dynamiccontent_addCharDefaultSpan { background-color: #1c2030; border: 1px solid #8d968f; }
+.HXI_gs_chars .HXI_dynamiccontent_addCharDefaultInput:checked + .HXI_dynamiccontent_addCharDefaultSpan { background-color: #b9963a; border-color: #f7edc4; }
+.HXI_gs_chars .HXI_dynamiccontent_addCharDefaultInput:focus-visible + .HXI_dynamiccontent_addCharDefaultSpan { outline: 2px solid var(--gs-gold); outline-offset: 2px; }
+
+/* merits: category boxes sit inline and wrap as the screen narrows */
+.HXI_gs_chars .HXI_dynamiccontent_showMerits { padding: 0; }
+
+.HXI_gs_chars .HXI_merit_groups {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.HXI_gs_chars .HXI_merit_group {
+    flex: 1 1 260px;
+    min-width: 0;
+    padding: 6px 10px 8px;
+    background: var(--gs-well);
+    border: 1px solid var(--gs-line);
+    border-radius: 6px;
+}
+
+.HXI_gs_chars .HXI_merit_group h4 {
+    margin: 0 0 4px;
+    padding: 0 0 4px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gs-gold);
+    border: 0;
+    border-bottom: 1px solid var(--gs-line);
+}
+
+.HXI_gs_chars .HXI_merit {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 30px;
+    padding: 2px 0;
+    border-bottom: 1px dotted var(--gs-line);
+}
+
+.HXI_gs_chars .HXI_merit:last-child { border-bottom: 0; }
+.HXI_gs_chars .HXI_merit_l { min-width: 0; }
+.HXI_gs_chars .HXI_merit_l small { color: var(--gs-muted); font-size: 12px; }
+
+.HXI_gs_chars .HXI_dynamiccontent_counterbox {
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    height: auto;
+    max-width: none;
+}
+
+.HXI_gs_chars .HXI_dynamiccontent_incrementInput {
+    width: 30px;
+    font-size: 15px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: #fff;
+    text-shadow: none;
+}
+
+.HXI_gs_chars .HXI_dynamiccontent_incrementButton {
+    width: 26px;
+    height: 26px;
+    color: var(--gs-text);
+    background: linear-gradient(180deg, #5b6386, #363c56);
+    border: 1px solid var(--gs-edge);
+    stroke: currentColor;
+    stroke-width: 1.6px;
+    text-shadow: none;
+}
+
+.HXI_gs_chars .HXI_dynamiccontent_incrementButton:hover { filter: brightness(1.25); }
+.HXI_gs_chars .HXI_dynamiccontent_incrementButton.incrementButton_show { display: inline-flex; align-items: center; justify-content: center; }
+
+@media (max-width: 420px) {
+    .HXI_gs_chars .HXI_merit_group { flex-basis: 100%; }
+    .HXI_gs_chars .HXI_charField { flex-wrap: wrap; }
+    .HXI_gs_chars .HXI_deleteCharButton { margin-left: 0; }
+}
+
 /* ---------- Slot search / remove-set modals (Gear Sets tab) ---------- */
 
 body.HXI-equipsets .modal-content[id^="HXI_equipsets_contentWrapper"] {

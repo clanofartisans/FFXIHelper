@@ -324,73 +324,49 @@ class HXI_Equipsets  {
 
     public function showMerits(HXI_Character $c){
         $html = "<div class=\"HXI_dynamiccontent_showMerits\" >
-                    <table id=\"HXI_dynamiccontent_showMerits_table\" class=\"HXI_dynamiccontent_showMerits_table\">" . 
+                    <div id=\"HXI_dynamiccontent_showMerits_table\" class=\"HXI_dynamiccontent_showMerits_table HXI_merit_groups\">" .
                         $this->showMeritsTable($c) .
-                    "</table>" . 
+                    "</div>" .
                 "</div>";
         return $html;
     }
 
+    /**
+     * Merit boxes: one box per category, laid out inline by CSS and wrapped as the screen narrows.
+     * Each row keeps the same input ids (HXI_equipsets_merits_stats#/skill#) the JS relies on.
+     */
     public function showMeritsTable(HXI_Character $c){
-		$html = "";
-		$html = "<tr><td><h4>Stats</h4></td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">HP (+10 per)</span></td><td style=\"\">" . $this->meritIncrement(2, $c->getMerit(2) ) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">MP (+10 per)</span></td><td style=\"\">" . $this->meritIncrement(5, $c->getMerit(5) ) . "</td></tr>
-									<tr><td style=\"height:10px; background-color: #12396c00 !important;\"></td></tr><tr></tr> 
-									<tr><td><span style=\"vertical-align:middle;\">STR (+1 per)</span></td><td style=\"\">" . $this->meritIncrement(8, $c->getMerit(8) ) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">DEX (+1 per)</span></td><td style=\"\">" . $this->meritIncrement(9, $c->getMerit(9)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">VIT (+1 per)</span></td><td style=\"\">" . $this->meritIncrement(10, $c->getMerit(10)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">AGI (+1 per)</span></td><td style=\"\">" . $this->meritIncrement(11, $c->getMerit(11)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">INT (+1 per)</span></td><td style=\"\">" . $this->meritIncrement(12, $c->getMerit(12)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">MND (+1 per)</span></td><td style=\"\">" . $this->meritIncrement(13, $c->getMerit(13)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">CHR (+1 per)</span></td><td style=\"\">" . $this->meritIncrement(14, $c->getMerit(14)) . "</td></tr>" .
+        $groups = [
+            "Stats" => [ 2 => ["HP", "+10 per"], 5 => ["MP", "+10 per"] ],
+            "Attributes" => [ 8 => ["STR", "+1 per"], 9 => ["DEX", "+1 per"], 10 => ["VIT", "+1 per"], 11 => ["AGI", "+1 per"],
+                              12 => ["INT", "+1 per"], 13 => ["MND", "+1 per"], 14 => ["CHR", "+1 per"] ],
+            "Combat Skills" => [ 80 => ["Hand to Hand", "+2 per"], 81 => ["Dagger", "+2 per"], 82 => ["Sword", "+2 per"],
+                                 83 => ["Great Sword", "+2 per"], 84 => ["Axe", "+2 per"], 85 => ["Great Axe", "+2 per"],
+                                 86 => ["Scythe", "+2 per"], 87 => ["Polearm", "+2 per"], 88 => ["Katana", "+2 per"],
+                                 89 => ["Great Katana", "+2 per"], 90 => ["Club", "+2 per"], 91 => ["Staff", "+2 per"],
+                                 104 => ["Archery", "+2 per"], 105 => ["Marksmanship", "+2 per"], 106 => ["Throwing", "+2 per"],
+                                 107 => ["Guard", "+2 per"], 108 => ["Evasion", "+2 per"], 109 => ["Shield", "+2 per"], 110 => ["Parry", "+2 per"] ],
+            "Magic Skills" => [ 111 => ["Divine Magic", "+2 per"], 112 => ["Healing Magic", "+2 per"], 113 => ["Enhancing Magic", "+2 per"],
+                                114 => ["Enfeebling Magic", "+2 per"], 115 => ["Elemental Magic", "+2 per"], 116 => ["Dark Magic", "+2 per"],
+                                117 => ["Summoning Magic", "+2 per"], 118 => ["Ninjutsu", "+2 per"], 119 => ["Singing", "+2 per"],
+                                120 => ["String Instrument", "+2 per"], 121 => ["Wind Instrument", "+2 per"] ],
+            "Other Skills" => [ 27 => ["Enmity Increase", "+1 per"], 999 => ["Enmity Decrease", "-1 per"], 165 => ["Crit Hit Rate", "+1% per"],
+                                166 => ["Enemy Crit Hit Rate", "-1% per"], 168 => ["Spell Interruption Rate", "-2% per"] ],
+        ];
 
-									"<tr></tr><tr><td style=\"height:10px; background-color: #12396c00 !important;\"></td></tr>" .
-									"<tr><td><h4>Combat Skills</h4></td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Hand to Hand (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(80, $c->getMerit(80)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Dagger (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(81, $c->getMerit(81)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Sword (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(82, $c->getMerit(82)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Great Sword (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(83, $c->getMerit(83)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Axe (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(84, $c->getMerit(84)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Great Axe (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(85, $c->getMerit(85)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Scythe (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(86, $c->getMerit(86)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Polearm (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(87, $c->getMerit(87)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Katana (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(88, $c->getMerit(88)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Great Katana (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(89, $c->getMerit(89)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Club (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(90, $c->getMerit(90)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Staff (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(91, $c->getMerit(91)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Archery (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(104, $c->getMerit(104)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Marksmanship (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(105, $c->getMerit(105)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Throwing (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(106, $c->getMerit(106)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Guard (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(107, $c->getMerit(107)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Evasion (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(108, $c->getMerit(108)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Shield (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(109, $c->getMerit(109)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Parry (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(110, $c->getMerit(110)) . "</td></tr>" .
-
-									"<tr></tr><tr><td style=\"height:10px; background-color: #12396c00 !important;\"></td></tr>" .
-									"<tr><td><h4>Magic Skills</h4></td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Divine Magic (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(111, $c->getMerit(111)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Healing Magic (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(112, $c->getMerit(112)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Enhancing Magic (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(113, $c->getMerit(113)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Enfeebling Magic (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(114, $c->getMerit(114)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Elemental Magic (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(115, $c->getMerit(115)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Dark Magic (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(116, $c->getMerit(116)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Summoning Magic (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(117, $c->getMerit(117)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Ninjutsu (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(118, $c->getMerit(118)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Singing (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(119, $c->getMerit(119)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">String Instrument (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(120, $c->getMerit(120)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Wind Instrument (+2 per)</span></td><td style=\"\">" . $this->meritIncrement(121, $c->getMerit(121)) . "</td></tr>" .
-								
-									"<tr></tr><tr><td style=\"height:10px; background-color: #12396c00 !important;\"></td></tr>" .
-									"<tr><td><h4>Other Skills</h4></td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Enmity Increase (+1 per)</span></td><td style=\"\">" . $this->meritIncrement(27, $c->getMerit(27)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Enmity Decrease (-1 per)</span></td><td style=\"\">" . $this->meritIncrement(999, $c->getMerit(999)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Crit Hit Rate (+1% per)</span></td><td style=\"\">" . $this->meritIncrement(165, $c->getMerit(165)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Enemy Crit Hit Rate (-1% per)</span></td><td style=\"\">" . $this->meritIncrement(166, $c->getMerit(166)) . "</td></tr>
-									<tr><td><span style=\"vertical-align:middle;\">Spell Interruption Rate (-2% per)</span></td><td style=\"\">" . $this->meritIncrement(168, $c->getMerit(168)) . "</td></tr>
-                                    ";
-		return $html;
-	}
+        $html = "";
+        foreach ( $groups as $title => $rows ) {
+            $html .= "<div class=\"HXI_merit_group\"><h4>$title</h4><div class=\"HXI_merit_rows\">";
+            foreach ( $rows as $id => $row ) {
+                $html .= "<div class=\"HXI_merit\">" .
+                            "<span class=\"HXI_merit_l\">" . $row[0] . " <small>(" . $row[1] . ")</small></span>" .
+                            $this->meritIncrement($id, $c->getMerit($id)) .
+                         "</div>";
+            }
+            $html .= "</div></div>";
+        }
+        return $html;
+    }
 
 	private function meritIncrement($merit, $value = 0){
 		if ( $merit <= 14 ) $type = "stats";
@@ -431,44 +407,59 @@ class HXI_Equipsets  {
     }
 
     public function showCharacters($userChars, $shouldLoadDefaultCharacter, HXI_Character $c){
-        $html = "<span><i><b>Disclosure:</b>  Users must be logged in to save a character. Saving a character stores the RACE and MERITS set below. The character will be de-selected if any changes are made. Refresh button resets stats to default.</i></span>" .
+        $defaultChecked = ( $c->def == 1 ) ? " checked" : "";
 
-					"<div id=\"HXI_equipsets_charTab\" >" .
-						HXI_HTMLOptions::selectableButtonsBar("HXI_equipsets_charSelect", $userChars, $shouldLoadDefaultCharacter) .
-						
-						"<div id=\"HXI_equipsets_charSelectMerits\">" .
+        $html = "<div class=\"HXI_gs HXI_gs_chars\">" .
+                    "<div id=\"HXI_equipsets_charTab\" class=\"HXI_gs_charTab\">" .
 
-							"<div class=\"HXI_equipsets_charSelectOptionsMenu\">" .
-								"<button id=\"HXI_editCharButton\" class=\"HXI_editCharButton\">Edit</button>" .
-								"<button id=\"HXI_dynamiccontent_saveChar\" class=\"HXI_newCharButton HXI_saveCharButton\">Save</button>" .
-							"</div>" .
-							"<div id=\"HXI_dynamiccontent_newCharSection\" style=\"display: none;\" >" .
-								"<p id=\"HXI_dynamiccontent_raceLabel\">Name</p>" .
-								"<input type=\"text\" id=\"HXI_dynamiccontent_charNameInput\" class=\"HXI_dynamiccontent_charNameInput\" placeholder=\"Character Name\" maxlength=\"25\"></input><br>" .
-							"</div>" .
-							"<div class=\"HXI_equipsets_selectRace\">" .
-								"<p id=\"HXI_dynamiccontent_raceLabel\">Default</p>" .
-								"<label class=\"HXI_dynamiccontent_addCharDefaultLabel\">" .
-									"<input type=\"checkbox\" id=\"HXI_dynamiccontent_defaultChar\" class=\"HXI_dynamiccontent_addCharDefaultInput\" disabled";
-								if ( $c->def == 1 ) $html .= " checked";
-								$html .= "></input>" .
-									"<span class=\"HXI_dynamiccontent_addCharDefaultSpan HXI_dynamiccontent_addCharDefaultSpanround\"></span>" .
-								"</label>" .
-								"<br><p id=\"HXI_dynamiccontent_raceLabel\">Race</p>" . HXI_HTMLOptions::raceDropDown("HXI_equipsets_selectRace", $c->race) . "<br>" .
-							"</div>" .
-							"<div>" .
-								"<p id=\"HXI_dynamiccontent_raceLabel\">Merits</p>" .
-								//"<button id=\"HXI_dynamiccontent_changeMerits\" class=\"HXI_dynamiccontent_shareButton\">Edit</button><br>" .
-							"</div>" .
-							"<div class=\"HXI_dynamiccontent_showMerits\" >
-								<table id=\"HXI_dynamiccontent_showMerits_table\" class=\"HXI_dynamiccontent_showMerits_table\">" . 
-									$this->showMeritsTable($c) .
-								"</table>" . 
-							"</div>" .
-							"<button id=\"HXI_deleteCharButton\" class=\"HXI_deleteCharButton\">Remove this character</button>" .
+                        // Character select window
+                        "<div class=\"HXI_win\">" .
+                            "<div class=\"HXI_win_title\">Characters</div>" .
+                            HXI_HTMLOptions::selectableButtonsBar("HXI_equipsets_charSelect", $userChars, $shouldLoadDefaultCharacter) .
+                        "</div>" .
 
-						"</div>" .
-					"</div>";
+                        "<div id=\"HXI_equipsets_charSelectMerits\">" .
+
+                            // Character details window
+                            "<div class=\"HXI_win\">" .
+                                "<div class=\"HXI_win_title\">Details</div>" .
+                                "<div class=\"HXI_equipsets_charSelectOptionsMenu\">" .
+                                    "<button id=\"HXI_editCharButton\" class=\"HXI_editCharButton\">Edit</button>" .
+                                    "<button id=\"HXI_dynamiccontent_saveChar\" class=\"HXI_newCharButton HXI_saveCharButton\">Save</button>" .
+                                    "<button id=\"HXI_deleteCharButton\" class=\"HXI_deleteCharButton\">Remove this character</button>" .
+                                "</div>" .
+                                "<div id=\"HXI_dynamiccontent_newCharSection\" class=\"HXI_charField\" style=\"display: none;\" >" .
+                                    "<label class=\"HXI_charLabel\" for=\"HXI_dynamiccontent_charNameInput\">Name</label>" .
+                                    "<input type=\"text\" id=\"HXI_dynamiccontent_charNameInput\" class=\"HXI_dynamiccontent_charNameInput\" placeholder=\"Character Name\" maxlength=\"25\">" .
+                                "</div>" .
+                                "<div class=\"HXI_equipsets_selectRace HXI_charFields\">" .
+                                    "<div class=\"HXI_charField\">" .
+                                        "<span class=\"HXI_charLabel\">Race</span>" . HXI_HTMLOptions::raceDropDown("HXI_equipsets_selectRace", $c->race) .
+                                    "</div>" .
+                                    "<div class=\"HXI_charField\">" .
+                                        "<span class=\"HXI_charLabel\">Default</span>" .
+                                        "<label class=\"HXI_dynamiccontent_addCharDefaultLabel\">" .
+                                            "<input type=\"checkbox\" id=\"HXI_dynamiccontent_defaultChar\" class=\"HXI_dynamiccontent_addCharDefaultInput\" disabled$defaultChecked>" .
+                                            "<span class=\"HXI_dynamiccontent_addCharDefaultSpan HXI_dynamiccontent_addCharDefaultSpanround\"></span>" .
+                                        "</label>" .
+                                    "</div>" .
+                                "</div>" .
+                            "</div>" .
+
+                            // Merits window
+                            "<div class=\"HXI_win\">" .
+                                "<div class=\"HXI_win_title\">Merits</div>" .
+                                "<div class=\"HXI_dynamiccontent_showMerits\" >
+                                    <div id=\"HXI_dynamiccontent_showMerits_table\" class=\"HXI_dynamiccontent_showMerits_table HXI_merit_groups\">" .
+                                        $this->showMeritsTable($c) .
+                                    "</div>" .
+                                "</div>" .
+                            "</div>" .
+
+                        "</div>" .
+                    "</div>" .
+                    "<p class=\"HXI_gs_note\"><i><b>Disclosure:</b> Users must be logged in to save a character. Saving a character stores the RACE and MERITS set here. The character will be de-selected if any changes are made.</i></p>" .
+                "</div>";
         return $html;
     }
 
