@@ -573,6 +573,12 @@
 
 /* ---------- Characters tab (same FFXI-window look) ---------- */
 
+/* the tab wrapper's default 6px 12px padding + overflow clipping crops the window borders/shadows */
+body.HXI-equipsets #HXI_tabs_characters_shown {
+    padding: 0;
+    overflow: visible;
+}
+
 .HXI_gs_chars #HXI_equipsets_charSelect {
     display: flex;
     flex-wrap: wrap;
@@ -724,14 +730,13 @@
 .HXI_gs_chars .HXI_dynamiccontent_showMerits { padding: 0; }
 
 .HXI_gs_chars .HXI_merit_groups {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    align-items: start;
     gap: 12px;
 }
 
 .HXI_gs_chars .HXI_merit_group {
-    flex: 1 1 260px;
     min-width: 0;
     padding: 6px 10px 8px;
     background: var(--gs-well);
@@ -763,7 +768,9 @@
 }
 
 .HXI_gs_chars .HXI_merit:last-child { border-bottom: 0; }
-.HXI_gs_chars .HXI_merit_l { min-width: 0; }
+.HXI_gs_chars .HXI_merit { flex-wrap: wrap; }
+.HXI_gs_chars .HXI_merit_l { flex: 1 1 80px; min-width: 0; line-height: 1.2; }
+.HXI_gs_chars .HXI_merit_l small { display: block; }
 .HXI_gs_chars .HXI_merit_l small { color: var(--gs-muted); font-size: 12px; }
 
 .HXI_gs_chars .HXI_dynamiccontent_counterbox {
@@ -799,7 +806,7 @@
 .HXI_gs_chars .HXI_dynamiccontent_incrementButton.incrementButton_show { display: inline-flex; align-items: center; justify-content: center; }
 
 @media (max-width: 420px) {
-    .HXI_gs_chars .HXI_merit_group { flex-basis: 100%; }
+    .HXI_gs_chars .HXI_merit_groups { grid-template-columns: minmax(0, 1fr); }
     .HXI_gs_chars .HXI_charField { flex-wrap: wrap; }
     .HXI_gs_chars .HXI_deleteCharButton { margin-left: 0; }
 }
