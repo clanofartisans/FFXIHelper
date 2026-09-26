@@ -355,16 +355,23 @@ class HXI_Equipsets  {
         ];
 
         $html = "";
+        // Boxes are stacked into columns (Stats+Attributes | Combat | Magic+Other) so heights balance
+        $columnStarts = [ "Stats" => true, "Combat Skills" => true, "Magic Skills" => true ];
         foreach ( $groups as $title => $rows ) {
+            if ( isset($columnStarts[$title]) ) {
+                if ( $html != "" ) $html .= "</div>";
+                $html .= "<div class=\"HXI_merit_col\">";
+            }
             $html .= "<div class=\"HXI_merit_group\"><h4>$title</h4><div class=\"HXI_merit_rows\">";
             foreach ( $rows as $id => $row ) {
                 $html .= "<div class=\"HXI_merit\">" .
-                            "<span class=\"HXI_merit_l\">" . $row[0] . " <small>(" . $row[1] . ")</small></span>" .
+                            "<span class=\"HXI_merit_l\"><b class=\"HXI_merit_name\">" . $row[0] . "</b> <small class=\"HXI_merit_n\">(" . $row[1] . ")</small></span>" .
                             $this->meritIncrement($id, $c->getMerit($id)) .
                          "</div>";
             }
             $html .= "</div></div>";
         }
+        $html .= "</div>";
         return $html;
     }
 

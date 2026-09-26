@@ -731,9 +731,17 @@ body.HXI-equipsets #HXI_tabs_characters_shown {
 
 .HXI_gs_chars .HXI_merit_groups {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     align-items: start;
     gap: 12px;
+}
+
+/* boxes are stacked into columns (Stats+Attributes | Combat | Magic+Other) so all show at once */
+.HXI_gs_chars .HXI_merit_col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
 }
 
 .HXI_gs_chars .HXI_merit_group {
@@ -762,38 +770,47 @@ body.HXI-equipsets #HXI_tabs_characters_shown {
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    min-height: 30px;
-    padding: 2px 0;
+    min-height: 32px;
+    padding: 3px 0;
     border-bottom: 1px dotted var(--gs-line);
 }
 
 .HXI_gs_chars .HXI_merit:last-child { border-bottom: 0; }
-.HXI_gs_chars .HXI_merit { flex-wrap: wrap; }
-.HXI_gs_chars .HXI_merit_l { flex: 1 1 80px; min-width: 0; line-height: 1.2; }
-.HXI_gs_chars .HXI_merit_l small { display: block; }
-.HXI_gs_chars .HXI_merit_l small { color: var(--gs-muted); font-size: 12px; }
 
+.HXI_gs_chars .HXI_merit_l { flex: 1 1 auto; min-width: 0; text-align: left; line-height: 1.2; }
+.HXI_gs_chars .HXI_merit_name { font-size: 16px; font-weight: 800; letter-spacing: 0.02em; color: #fff; }
+.HXI_gs_chars .HXI_merit_n { font-size: 12px; font-weight: 400; white-space: nowrap; color: var(--gs-muted); }
+
+/* number on the left, +/- stacked vertically to its right */
 .HXI_gs_chars .HXI_dynamiccontent_counterbox {
+    display: grid;
     flex: 0 0 auto;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
     align-items: center;
-    justify-content: flex-end;
-    gap: 4px;
+    justify-items: end;
+    column-gap: 4px;
+    row-gap: 2px;
     height: auto;
     max-width: none;
 }
 
 .HXI_gs_chars .HXI_dynamiccontent_incrementInput {
-    width: 30px;
-    font-size: 15px;
-    font-weight: 600;
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    width: 32px;
+    font-size: 17px;
+    font-weight: 700;
     font-variant-numeric: tabular-nums;
     color: #fff;
     text-shadow: none;
 }
 
 .HXI_gs_chars .HXI_dynamiccontent_incrementButton {
+    grid-column: 2;
     width: 26px;
-    height: 26px;
+    height: 20px;
+    border-radius: 5px;
     color: var(--gs-text);
     background: linear-gradient(180deg, #5b6386, #363c56);
     border: 1px solid var(--gs-edge);
@@ -802,6 +819,8 @@ body.HXI-equipsets #HXI_tabs_characters_shown {
     text-shadow: none;
 }
 
+.HXI_gs_chars .HXI_dynamiccontent_incrementButton:first-child { grid-row: 2; } /* minus */
+.HXI_gs_chars .HXI_dynamiccontent_incrementButton:last-child { grid-row: 1; }  /* plus */
 .HXI_gs_chars .HXI_dynamiccontent_incrementButton:hover { filter: brightness(1.25); }
 .HXI_gs_chars .HXI_dynamiccontent_incrementButton.incrementButton_show { display: inline-flex; align-items: center; justify-content: center; }
 
