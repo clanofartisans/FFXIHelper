@@ -2,16 +2,29 @@
 var Tooltip = require("./HXI_Tooltips.js");
 var LuaSets = require("./HXI_LuaSets.js");
 
+let pendingRequests = 0;
+
 function actionAPI(params, forTab, currentButton, callback) {
   //console.log("actionAPI:", params);
   var api = new mw.Api();
 
+  // Requests can overlap (e.g. selecting "None" fires more than one), so track a pending count
+  // instead of toggling; a toggle gets out of sync and leaves the tab stuck in the loading state.
   let mainDiv = document.getElementById("HXI_tabs_equipsets_shown");
-  if ( mainDiv) mainDiv.classList.toggle('tabcontent-loading');
+  pendingRequests++;
+  if ( mainDiv) mainDiv.classList.add('tabcontent-loading');
 
-  api.get( params ).done( function ( d ) {
+  let finished = false;
+  const finishLoading = function () {
+    if ( finished ) return;
+    finished = true;
+    pendingRequests = Math.max(0, pendingRequests - 1);
+    if ( mainDiv && pendingRequests == 0 ) mainDiv.classList.remove('tabcontent-loading');
+  };
 
-    if ( mainDiv) mainDiv.classList.toggle('tabcontent-loading');
+  api.get( params ).fail( finishLoading ).done( function ( d ) {
+
+    finishLoading();
 
     const result = d[forTab];
       //console.log(forTab);
