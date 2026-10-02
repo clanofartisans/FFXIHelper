@@ -1,0 +1,962 @@
+/*
+ * Gear Sets tab - FFXI menu-window look.
+ *
+ * Layout (mobile first, CSS grid areas):
+ *   phone   (<700px)   : equipment -> stats -> saved sets/export/equipment list, single column
+ *   tablet  (>=700px)  : equipment | stats, saved sets/export/list full width below
+ *   desktop (>=1100px) : stats | equipment | saved sets/export/list
+ *
+ * Everything is scoped under .HXI_gs so it can't leak into the other tabs.
+ */
+
+.HXI_gs {
+    --gs-top: #4a5170;
+    --gs-mid: #363c56;
+    --gs-bot: #262b3d;
+    --gs-edge: #c9d0c8;
+    --gs-gold: #ecdc9a;
+    --gs-text: #f4f5ee;
+    --gs-muted: #ccd2c8;
+    --gs-well: rgba(12, 14, 22, 0.42);
+    --gs-line: rgba(201, 208, 200, 0.3);
+    --gs-pos: #a6f5a0;
+    --gs-neg: #ff6f6f;
+
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 10px 0 0;
+    font-size: 15px;
+}
+
+.HXI_gs *,
+.HXI_gs *::before,
+.HXI_gs *::after {
+    box-sizing: border-box;
+}
+
+/* ---------- Page layout ---------- */
+
+.HXI_gs_layout {
+    display: grid;
+    gap: 14px;
+    align-items: start;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+        "main"
+        "stats"
+        "side";
+}
+
+.HXI_gs_main { grid-area: main; min-width: 0; }
+.HXI_gs_stats { grid-area: stats; min-width: 0; }
+.HXI_gs_side { grid-area: side; min-width: 0; }
+
+@media (min-width: 700px) {
+    .HXI_gs_layout {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-areas:
+            "main stats"
+            "side side";
+    }
+}
+
+@media (min-width: 1100px) {
+    .HXI_gs_layout {
+        grid-template-columns: minmax(270px, 330px) minmax(340px, 440px) minmax(260px, 1fr);
+        grid-template-areas: "stats main side";
+    }
+}
+
+.HXI_gs_note {
+    margin: 12px 0 0;
+    font-size: 12px;
+    opacity: 0.75;
+}
+
+/* ---------- FFXI window ---------- */
+
+.HXI_gs .HXI_win {
+    margin: 0 0 14px;
+    padding: 0 0 10px;
+    color: var(--gs-text);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.65);
+    background: linear-gradient(180deg, var(--gs-top) 0%, var(--gs-mid) 42%, var(--gs-bot) 100%);
+    border: 2px solid var(--gs-edge);
+    border-radius: 10px;
+    box-shadow:
+        0 0 0 1px #12141c,
+        0 6px 16px rgba(0, 0, 0, 0.4),
+        inset 0 0 18px rgba(0, 0, 0, 0.4);
+}
+
+.HXI_gs .HXI_win > :not(summary):not(.HXI_win_title) {
+    margin-left: 12px;
+    margin-right: 12px;
+}
+
+.HXI_gs .HXI_win_title {
+    display: block;
+    margin: 0 0 10px;
+    padding: 7px 12px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gs-gold);
+    border-bottom: 1px solid var(--gs-line);
+    border-radius: 8px 8px 0 0;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0));
+}
+
+/* collapsible windows (<details>) */
+.HXI_gs summary.HXI_win_title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 40px;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+}
+
+.HXI_gs summary.HXI_win_title::-webkit-details-marker { display: none; }
+
+.HXI_gs summary.HXI_win_title::after {
+    content: "\25B8";
+    font-size: 14px;
+    transition: transform 0.15s ease;
+}
+
+.HXI_gs details[open] > summary.HXI_win_title::after { transform: rotate(90deg); }
+
+.HXI_gs details:not([open]) { padding-bottom: 0; }
+.HXI_gs details:not([open]) > summary.HXI_win_title {
+    margin-bottom: 0;
+    border-bottom: 0;
+    border-radius: 8px;
+}
+
+.HXI_gs summary.HXI_win_title:hover { background: linear-gradient(90deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.02)); }
+
+.HXI_gs button:focus-visible,
+.HXI_gs select:focus-visible,
+.HXI_gs input:focus-visible,
+.HXI_gs summary:focus-visible,
+.HXI_gs .equipsetsGridImage:focus-visible {
+    outline: 2px solid var(--gs-gold);
+    outline-offset: 2px;
+}
+
+/* ---------- Jobs / levels ---------- */
+
+.HXI_gs .HXI_gs_jobs {
+    margin-top: 0;
+    margin-bottom: 4px;
+    padding: 0;
+    font-size: inherit;
+    line-height: normal;
+}
+
+.HXI_gs .HXI_gs_jobRow {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 6px 10px;
+    margin: 0 0 8px;
+}
+
+.HXI_gs .HXI_gs_jobLabel {
+    flex: 0 0 44px;
+    font-weight: 700;
+    color: var(--gs-gold);
+}
+
+.HXI_gs .HXI_gs_lvl {
+    flex: 0 0 auto;
+    margin-left: auto; /* Lv label + dropdown always sit at the right edge */
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--gs-muted);
+}
+
+.HXI_gs select.HXI_dynamiccontent_customDropDown {
+    display: block;
+    flex: 1 1 0;
+    min-width: 0;
+    height: 40px;
+    margin: 0;
+    padding: 0 8px;
+    font-size: 15px;
+    color: #fff;
+    background-color: #1c2030;
+    border: 1px solid #8d968f;
+    border-radius: 6px;
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
+    text-shadow: none;
+}
+
+.HXI_gs .HXI_gs_lvl select.HXI_dynamiccontent_customDropDown {
+    flex: 0 0 auto;
+    width: 76px;
+}
+
+.HXI_gs select.HXI_dynamiccontent_customDropDown:disabled { opacity: 0.55; cursor: not-allowed; }
+.HXI_gs select.HXI_dynamiccontent_customDropDown option { background-color: #1c2030; color: #fff; }
+
+.HXI_gs .HXI_gs_max {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 40px;
+    cursor: pointer;
+}
+
+.HXI_gs .HXI_gs_max input { width: 20px; height: 20px; margin: 0; accent-color: var(--gs-gold); }
+
+/* ---------- 4x4 equipment grid ---------- */
+
+.HXI_gs .HXI_grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    width: auto;
+    height: auto;
+    margin-top: 8px;
+    padding: 8px;
+    background: var(--gs-well);
+    border: 1px solid var(--gs-line);
+    border-radius: 8px;
+}
+
+.HXI_gs .HXI_slot {
+    position: relative;
+    display: block;
+    aspect-ratio: 1 / 1;
+    min-width: 0;
+    background: radial-gradient(circle at 50% 30%, #5a635e 0%, #333938 80%);
+    border: 1px solid #7f8a83;
+    border-radius: 6px;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.65), inset 0 2px 6px rgba(0, 0, 0, 0.6);
+    transition: border-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.HXI_gs .HXI_slot:hover,
+.HXI_gs .HXI_slot:focus-within {
+    border-color: var(--gs-gold);
+    box-shadow: 0 0 0 2px rgba(245, 217, 139, 0.55), inset 0 0 0 1px rgba(0, 0, 0, 0.65);
+}
+
+.HXI_gs .HXI_slot_label {
+    position: absolute;
+    top: 3px;
+    left: 5px;
+    z-index: 1;
+    font-size: 10px;
+    line-height: 1;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #c4cbc0;
+    pointer-events: none;
+}
+
+.HXI_gs .equipsetsGridImage {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 6px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.HXI_gs .equipsetsGridImage:hover { -webkit-filter: brightness(1.25); filter: brightness(1.25); }
+.HXI_gs .equipsetsGridImage p { margin: 0; padding: 0; line-height: 0; }
+.HXI_gs .equipsetsGridImage .mw-parser-output { line-height: 0; }
+.HXI_gs .equipsetsGridImage img { display: block; max-width: 100%; height: auto; }
+.HXI_gs .equipsetsGridImage[data-value="0"] img { opacity: 0.5; }
+
+/* ---------- Resistances ---------- */
+
+.HXI_gs .HXI_Equipsets_showstats_res { margin-top: 10px; }
+
+.HXI_gs .HXI_resGrid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+}
+
+.HXI_gs .HXI_res {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 3px 2px;
+    font-variant-numeric: tabular-nums;
+    background: var(--gs-well);
+    border: 1px solid var(--gs-line);
+    border-radius: 6px;
+}
+
+.HXI_gs .HXI_res .mw-parser-output,
+.HXI_gs .HXI_res p { display: inline-flex; margin: 0; padding: 0; line-height: 0; }
+
+/* ---------- Actions (save / share) ---------- */
+
+.HXI_gs .HXI_gs_actions,
+.HXI_gs .HXI_gs_saveRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 14px;
+}
+
+.HXI_gs .HXI_gs_saveRow { flex-wrap: nowrap; }
+
+.HXI_gs .HXI_gs_actions > button,
+.HXI_gs .HXI_gs_saveRow > button {
+    display: inline-flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: auto;
+    height: 44px;
+    min-width: 44px;
+    margin: 0;
+    padding: 0 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gs-text);
+    background: linear-gradient(180deg, #5b6386, #363c56);
+    border: 1px solid var(--gs-edge);
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: filter 0.12s ease, transform 0.05s ease;
+}
+
+.HXI_gs .HXI_gs_actions > button:hover,
+.HXI_gs .HXI_gs_saveRow > button:hover { filter: brightness(1.15); }
+.HXI_gs .HXI_gs_actions > button:active,
+.HXI_gs .HXI_gs_saveRow > button:active { transform: translateY(1px); }
+
+/* primary: Save this set / Save */
+.HXI_gs .HXI_gs_actions > .HXI_newSetButton,
+.HXI_gs .HXI_gs_saveRow > .HXI_saveSetButton {
+    flex: 2 1 auto;
+    color: #2a2000;
+    background: linear-gradient(180deg, #f4e6a6, #b9963a);
+    border-color: #f7edc4;
+    text-shadow: none;
+}
+
+.HXI_gs .HXI_gs_actions > .HXI_newSetButton svg { width: 12px; height: 12px; stroke: currentColor; stroke-width: 2px; fill: none; }
+.HXI_gs .HXI_gs_actions > .HXI_newSetButton_Grayed {
+    color: var(--gs-text);
+    background: linear-gradient(180deg, #6b7280, #3f4451);
+    border-color: var(--gs-line);
+}
+
+.HXI_gs .HXI_gs_saveRow > .HXI_saveSetButton { flex: 0 0 96px; visibility: visible; }
+
+.HXI_gs .HXI_gs_actions > .HXI_dynamiccontent_shareDiscordButton {
+    background: linear-gradient(180deg, #7f95e6, #5468c4);
+}
+
+.HXI_gs .HXI_gs_actions > button svg { flex: none; width: 20px; height: 20px; }
+
+.HXI_gs input.HXI_dynamiccontent_setNameInput {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
+    height: 44px;
+    margin: 0;
+    padding: 0 12px;
+    font-size: 16px; /* >=16px stops iOS from zooming the page on focus */
+    color: #fff;
+    background: #1c2030;
+    border: 1px solid #8d968f;
+    border-radius: 8px;
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.HXI_gs input.HXI_dynamiccontent_setNameInput::placeholder { color: var(--gs-muted); opacity: 0.8; }
+
+/* ---------- Status window ---------- */
+
+.HXI_gs .HXI_stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 8px 12px;
+    margin-top: 0;
+    padding: 0;
+    font-size: inherit;
+    line-height: normal;
+}
+
+.HXI_gs .HXI_statGroup {
+    min-width: 0;
+    padding: 6px 10px;
+    background: var(--gs-well);
+    border: 1px solid var(--gs-line);
+    border-radius: 6px;
+}
+
+.HXI_gs .HXI_statGroup_vitals {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 6px 24px;
+}
+
+.HXI_gs .HXI_statGroup_vitals .HXI_stat { flex: 1 1 0; }
+.HXI_gs .HXI_statGroup_vitals .HXI_stat_v { font-size: 18px; }
+.HXI_gs .HXI_statGroup_vitals .HXI_stat:first-child .HXI_stat_v { color: #a6f5a0; }
+.HXI_gs .HXI_statGroup_vitals .HXI_stat:last-child .HXI_stat_v { color: #b9d8f2; }
+
+.HXI_gs .HXI_stat {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 2px 0;
+}
+
+.HXI_gs .HXI_stat_l { color: var(--gs-muted); }
+
+.HXI_gs .HXI_stat_v {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    color: #fff;
+}
+
+.HXI_gs .HXI_stat_suffix { margin-left: 1px; font-weight: 400; color: var(--gs-muted); }
+.HXI_gs .HXI_mod { margin-left: 6px; font-size: 13px; }
+.HXI_gs .HXI_pos { color: var(--gs-pos); }
+.HXI_gs .HXI_neg { color: var(--gs-neg); }
+
+/* ---------- Equipment list ---------- */
+
+.HXI_gs .HXI_eqlist {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.HXI_gs .HXI_eqlist li {
+    display: flex;
+    gap: 10px;
+    margin: 0;
+    padding: 5px 0;
+    border-bottom: 1px dotted var(--gs-line);
+}
+
+.HXI_gs .HXI_eqlist_slot { flex: 0 0 52px; font-size: 13px; color: var(--gs-gold); }
+.HXI_gs .HXI_eqlist_item { min-width: 0; overflow-wrap: anywhere; }
+.HXI_gs .HXI_eqlist_item p,
+.HXI_gs .HXI_eqlist_item .mw-parser-output { margin: 0 !important; }
+.HXI_gs .HXI_eqlist_item a,
+.HXI_gs .HXI_eqlist_item a:visited { color: #b9d8f2; }
+
+/* ---------- Lua export ---------- */
+
+.HXI_gs .HXI_gs_lua h2 {
+    margin: 4px 0;
+    padding: 0;
+    font-size: 13px;
+    border: 0;
+    color: var(--gs-gold);
+}
+
+.HXI_gs .HXI_gs_lua pre {
+    max-height: 260px;
+    margin: 0 0 8px;
+    padding: 8px 10px;
+    overflow: auto;
+    font-size: 12.5px;
+    color: #eceee6;
+    text-shadow: none;
+    background: rgba(12, 14, 22, 0.6);
+    border: 1px solid var(--gs-line);
+    border-radius: 6px;
+}
+
+/* ---------- Saved sets ---------- */
+
+.HXI_gs .HXI_setsList {
+    max-height: 60vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.HXI_gs .HXI_setsGroups {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 6px 16px;
+}
+
+.HXI_gs .HXI_setGroup h4 {
+    margin: 6px 0 4px;
+    padding: 0;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gs-gold);
+    border: 0;
+}
+
+.HXI_gs .HXI_setGroup ul { margin: 0; padding: 0; list-style: none; }
+
+.HXI_gs .HXI_setGroup li {
+    display: flex;
+    align-items: stretch;
+    margin: 0 0 5px;
+    overflow: hidden;
+    background: var(--gs-well);
+    border: 1px solid var(--gs-line);
+    border-radius: 6px;
+}
+
+.HXI_gs .HXI_setLoad,
+.HXI_gs .HXI_setRemove {
+    margin: 0;
+    font: inherit;
+    color: inherit;
+    text-shadow: inherit;
+    background: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    cursor: pointer;
+}
+
+.HXI_gs .HXI_setLoad {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 42px;
+    padding: 0 10px;
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.HXI_gs .HXI_setLoad:hover { background: rgba(245, 217, 139, 0.18); }
+
+.HXI_gs .HXI_setLoad.HXI_setActive {
+    background: rgba(245, 217, 139, 0.28);
+    box-shadow: inset 3px 0 0 var(--gs-gold);
+}
+
+.HXI_gs .HXI_setRemove {
+    flex: 0 0 42px;
+    font-size: 20px;
+    line-height: 1;
+    color: #ff9c9c;
+    border-left: 1px solid var(--gs-line);
+}
+
+.HXI_gs .HXI_setRemove:hover { color: #fff; background: rgba(255, 80, 80, 0.3); }
+
+.HXI_gs .HXI_setsEmpty { margin: 4px 0 8px; font-size: 14px; color: var(--gs-muted); }
+
+/* ---------- Loading state while the API recalculates ---------- */
+
+#HXI_tabs_equipsets_shown.tabcontent-loading .HXI_gs_layout { pointer-events: none; }
+
+/* ---------- Characters tab (same FFXI-window look) ---------- */
+
+/* the tab wrapper's default 6px 12px padding + overflow clipping crops the window borders/shadows */
+body.HXI-equipsets #HXI_tabs_characters_shown {
+    padding: 0;
+    overflow: visible;
+}
+
+.HXI_gs_chars #HXI_equipsets_charSelect {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    width: auto;
+    height: auto;
+    text-align: left;
+    overflow: visible;
+}
+
+.HXI_gs_chars #HXI_equipsets_charactersButtonsList {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+}
+
+.HXI_gs_chars #HXI_equipsets_charSelectMerits { display: block; width: auto; height: auto; overflow: visible; }
+
+/* buttons: shared shape */
+.HXI_gs_chars .HXI_charButton,
+.HXI_gs_chars .HXI_newCharButton,
+.HXI_gs_chars .HXI_editCharButton,
+.HXI_gs_chars .HXI_deleteCharButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 40px;
+    min-width: 44px;
+    margin: 0;
+    padding: 0 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gs-text);
+    background: linear-gradient(180deg, #5b6386, #363c56);
+    border: 1px solid var(--gs-edge);
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.65);
+    stroke: currentColor;
+    cursor: pointer;
+    transition: filter 0.12s ease, transform 0.05s ease;
+}
+
+.HXI_gs_chars .HXI_charButton:hover,
+.HXI_gs_chars .HXI_newCharButton:hover,
+.HXI_gs_chars .HXI_editCharButton:hover,
+.HXI_gs_chars .HXI_deleteCharButton:hover {
+    color: var(--gs-text);
+    background: linear-gradient(180deg, #5b6386, #363c56);
+    stroke: currentColor;
+    filter: brightness(1.2);
+}
+
+.HXI_gs_chars .HXI_charButton:active,
+.HXI_gs_chars .HXI_newCharButton:active,
+.HXI_gs_chars .HXI_editCharButton:active,
+.HXI_gs_chars .HXI_deleteCharButton:active { transform: translateY(1px); }
+
+.HXI_gs_chars .HXI_newCharButton svg { width: 12px; height: 12px; stroke-width: 2px; fill: none; }
+
+/* primary (gold): New / Save / selected character */
+.HXI_gs_chars .HXI_newCharButton,
+.HXI_gs_chars .HXI_charButtonselected,
+.HXI_gs_chars .HXI_charButtonselected:hover {
+    color: #2a2000;
+    background: linear-gradient(180deg, #f4e6a6, #b9963a);
+    border-color: #f7edc4;
+    text-shadow: none;
+}
+
+.HXI_gs_chars .HXI_newCharButton:hover {
+    color: #2a2000;
+    background: linear-gradient(180deg, #f4e6a6, #b9963a);
+}
+
+.HXI_gs_chars .HXI_newCharButton_Grayed,
+.HXI_gs_chars .HXI_newCharButton_Grayed:hover {
+    color: var(--gs-text);
+    background: linear-gradient(180deg, #6b7280, #3f4451);
+    border-color: var(--gs-line);
+    text-shadow: none;
+}
+
+.HXI_gs_chars .HXI_editCharButtonSelected { background: linear-gradient(180deg, #7f95e6, #5468c4); }
+.HXI_gs_chars .HXI_deleteCharButton { color: #ffd0d0; background: linear-gradient(180deg, #b34a4a, #7a2b2b); border-color: #e8a0a0; }
+.HXI_gs_chars .HXI_deleteCharButton:hover { color: #fff; background: linear-gradient(180deg, #b34a4a, #7a2b2b); }
+.HXI_gs_chars .HXI_charButton_default { box-shadow: 0 0 0 2px rgba(166, 245, 160, 0.55), 0 2px 6px rgba(0, 0, 0, 0.3); }
+
+.HXI_gs_chars .HXI_charButton:disabled,
+.HXI_gs_chars .HXI_newCharButton:disabled,
+.HXI_gs_chars .HXI_editCharButton:disabled {
+    color: var(--gs-muted);
+    background: linear-gradient(180deg, #4b5060, #363a47);
+    border-color: var(--gs-line);
+    opacity: 0.6;
+}
+
+.HXI_gs_chars .HXI_equipsets_charSelectOptionsMenu {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: auto;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.HXI_gs_chars .HXI_deleteCharButton { margin: 0 0 0 auto; }
+
+/* details: name / race / default */
+.HXI_gs_chars .HXI_charFields { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+
+.HXI_gs_chars .HXI_charField {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.HXI_gs_chars .HXI_charLabel { font-weight: 700; color: var(--gs-gold); }
+
+.HXI_gs_chars select.HXI_dynamiccontent_customDropDown { flex: 0 0 auto; width: 140px; }
+
+.HXI_gs_chars input.HXI_dynamiccontent_charNameInput {
+    flex: 1 1 200px;
+    min-width: 0;
+    height: 40px;
+    margin: 0;
+    padding: 0 12px;
+    font-size: 16px;
+    color: #fff;
+    background: #1c2030;
+    border: 1px solid #8d968f;
+    border-radius: 8px;
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.HXI_gs_chars input.HXI_dynamiccontent_charNameInput::placeholder { color: var(--gs-muted); opacity: 0.8; }
+
+.HXI_gs_chars .HXI_dynamiccontent_addCharDefaultLabel { margin: 0; flex: 0 0 45px; }
+.HXI_gs_chars .HXI_dynamiccontent_addCharDefaultSpan { background-color: #1c2030; border: 1px solid #8d968f; }
+.HXI_gs_chars .HXI_dynamiccontent_addCharDefaultInput:checked + .HXI_dynamiccontent_addCharDefaultSpan { background-color: #b9963a; border-color: #f7edc4; }
+.HXI_gs_chars .HXI_dynamiccontent_addCharDefaultInput:focus-visible + .HXI_dynamiccontent_addCharDefaultSpan { outline: 2px solid var(--gs-gold); outline-offset: 2px; }
+
+/* merits: category boxes sit inline and wrap as the screen narrows */
+.HXI_gs_chars .HXI_dynamiccontent_showMerits { padding: 0; }
+
+.HXI_gs_chars .HXI_merit_groups {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    align-items: start;
+    gap: 12px;
+}
+
+/* boxes are stacked into columns (Stats+Attributes | Combat | Magic+Other) so all show at once */
+.HXI_gs_chars .HXI_merit_col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+}
+
+.HXI_gs_chars .HXI_merit_group {
+    min-width: 0;
+    padding: 6px 10px 8px;
+    background: var(--gs-well);
+    border: 1px solid var(--gs-line);
+    border-radius: 6px;
+}
+
+.HXI_gs_chars .HXI_merit_group h4 {
+    margin: 0 0 4px;
+    padding: 0 0 4px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gs-gold);
+    border: 0;
+    border-bottom: 1px solid var(--gs-line);
+}
+
+.HXI_gs_chars .HXI_merit {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 32px;
+    padding: 3px 0;
+    border-bottom: 1px dotted var(--gs-line);
+}
+
+.HXI_gs_chars .HXI_merit:last-child { border-bottom: 0; }
+
+.HXI_gs_chars .HXI_merit_l { flex: 1 1 auto; min-width: 0; text-align: left; line-height: 1.2; }
+.HXI_gs_chars .HXI_merit_name { font-size: 16px; font-weight: 800; letter-spacing: 0.02em; color: #fff; }
+.HXI_gs_chars .HXI_merit_n { font-size: 12px; font-weight: 400; white-space: nowrap; color: var(--gs-muted); }
+
+/* number on the left, +/- stacked vertically to its right */
+.HXI_gs_chars .HXI_dynamiccontent_counterbox {
+    display: grid;
+    flex: 0 0 auto;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+    align-items: center;
+    justify-items: end;
+    column-gap: 4px;
+    row-gap: 2px;
+    height: auto;
+    max-width: none;
+}
+
+.HXI_gs_chars .HXI_dynamiccontent_incrementInput {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    width: 32px;
+    font-size: 17px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: #fff;
+    text-shadow: none;
+}
+
+.HXI_gs_chars .HXI_dynamiccontent_incrementButton {
+    grid-column: 2;
+    width: 26px;
+    height: 20px;
+    border-radius: 5px;
+    color: var(--gs-text);
+    background: linear-gradient(180deg, #5b6386, #363c56);
+    border: 1px solid var(--gs-edge);
+    stroke: currentColor;
+    stroke-width: 1.6px;
+    text-shadow: none;
+}
+
+.HXI_gs_chars .HXI_dynamiccontent_incrementButton:first-child { grid-row: 2; } /* minus */
+.HXI_gs_chars .HXI_dynamiccontent_incrementButton:last-child { grid-row: 1; }  /* plus */
+.HXI_gs_chars .HXI_dynamiccontent_incrementButton:hover { filter: brightness(1.25); }
+.HXI_gs_chars .HXI_dynamiccontent_incrementButton.incrementButton_show { display: inline-flex; align-items: center; justify-content: center; }
+
+@media (max-width: 420px) {
+    .HXI_gs_chars .HXI_merit_groups { grid-template-columns: minmax(0, 1fr); }
+    .HXI_gs_chars .HXI_charField { flex-wrap: wrap; }
+    .HXI_gs_chars .HXI_deleteCharButton { margin-left: 0; }
+}
+
+/* ---------- Slot search / remove-set modals (Gear Sets tab) ---------- */
+
+body.HXI-equipsets .modal-content[id^="HXI_equipsets_contentWrapper"] {
+    top: 50%;
+    width: min(92vw, 520px);
+    max-height: 88vh;
+    overflow-y: auto;
+    padding: 14px 16px 16px;
+    color: #f4f5ee;
+    background: linear-gradient(180deg, #4a5170 0%, #363c56 42%, #262b3d 100%);
+    border: 2px solid #c9d0c8;
+    border-radius: 10px;
+    box-shadow: 0 0 0 1px #12141c, 0 10px 30px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.65);
+    box-sizing: border-box;
+}
+
+body.HXI-equipsets .modal-content[id^="HXI_equipsets_contentWrapper"] h2,
+body.HXI-equipsets .modal-content[id^="HXI_equipsets_contentWrapper"] h3 {
+    margin: 0 0 8px;
+    padding: 0;
+    font-size: 16px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #ecdc9a;
+    border: 0;
+}
+
+body.HXI-equipsets .modal-content[id^="HXI_equipsets_contentWrapper"] p { margin: 0 0 8px; }
+
+body.HXI-equipsets .modal-content[id^="HXI_equipsets_contentWrapper"] .HXI_dynamiccontent_textinput {
+    width: calc(100% - 92px);
+    height: 40px;
+    padding: 0 10px;
+    font-size: 16px;
+    color: #fff;
+    background: #1c2030;
+    border: 1px solid #8d968f;
+    border-radius: 6px;
+    text-shadow: none;
+    vertical-align: middle;
+}
+
+body.HXI-equipsets .modal-content[id^="HXI_equipsets_contentWrapper"] .HXI_dynamiccontent_customButton {
+    height: 40px;
+    min-width: 80px;
+    vertical-align: middle;
+}
+
+body.HXI-equipsets .modal-content[id^="HXI_equipsets_contentWrapper"] .customButton_cancel { float: left; background: #5d6570; border-color: #8d968f; color: #fff; }
+
+body.HXI-equipsets .modal-content[id^="HXI_equipsets_contentWrapper"] .HXI_equipsets_searchResults_div {
+    max-height: 45vh !important;
+    margin-top: 10px;
+    overflow-y: auto;
+}
+
+body.HXI-equipsets .modal-content[id^="HXI_equipsets_contentWrapper"] dl { margin: 0; }
+
+body.HXI-equipsets .modal-content[id^="HXI_equipsets_contentWrapper"] dt {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    margin: 0;
+    padding: 4px 8px;
+    cursor: pointer;
+    border-bottom: 1px dotted rgba(201, 208, 200, 0.3);
+}
+
+body.HXI-equipsets .modal-content[id^="HXI_equipsets_contentWrapper"] dt:focus { outline: 2px solid #ecdc9a; outline-offset: -2px; }
+
+/* ---------- Tab bar (shared markup, themed only on this page) ---------- */
+
+body.HXI-equipsets .HXI_tabs {
+    height: auto;
+    min-height: 44px;
+    background: linear-gradient(180deg, #4a5170, #262b3d);
+    border-color: #c9d0c8;
+    border-radius: 8px 8px 0 0;
+    -webkit-overflow-scrolling: touch;
+}
+
+body.HXI-equipsets .HXI_tabs button {
+    flex: 0 0 auto;
+    min-height: 44px;
+    padding: 0 18px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #c9d0c8;
+    background: transparent;
+    border-bottom: 3px solid transparent;
+}
+
+body.HXI-equipsets .HXI_tabs button:hover { background: rgba(255, 255, 255, 0.12); }
+
+body.HXI-equipsets .HXI_tabs button.active {
+    color: #ecdc9a;
+    background: rgba(255, 255, 255, 0.1);
+    border-bottom-color: #ecdc9a;
+}
+
+/* ---------- Small phones ---------- */
+
+@media (max-width: 420px) {
+    .HXI_gs { font-size: 14px; }
+    .HXI_gs .HXI_gs_jobRow { gap: 6px; }
+    .HXI_gs .HXI_gs_jobLabel { flex-basis: 34px; }
+    .HXI_gs select.HXI_dynamiccontent_customDropDown { height: 36px; padding: 0 4px; font-size: 13px; }
+    .HXI_gs .HXI_gs_lvl { gap: 4px; }
+    .HXI_gs .HXI_gs_lvl select.HXI_dynamiccontent_customDropDown { width: 62px; }
+    .HXI_gs .HXI_gs_max { gap: 3px; font-size: 12px; }
+    .HXI_gs .HXI_gs_max input { width: 16px; height: 16px; }
+    .HXI_gs .HXI_grid { gap: 4px; padding: 6px; }
+    .HXI_gs .HXI_slot_label { font-size: 9px; top: 2px; left: 3px; }
+    .HXI_gs .HXI_gs_actions { flex-wrap: nowrap; gap: 6px; }
+    .HXI_gs .HXI_gs_actions > button { flex: 1 1 auto; gap: 6px; padding: 0 8px; font-size: 13px; }
+    .HXI_gs .HXI_gs_actions > .HXI_newSetButton { flex: 2 1 auto; }
+    .HXI_gs .HXI_statGroup_vitals { flex-direction: column; gap: 0; }
+}
+
+@media (max-width: 340px) {
+    .HXI_gs .HXI_gs_jobLabel { flex-basis: 30px; font-size: 12px; }
+    .HXI_gs .HXI_gs_lvl { font-size: 12px; }
+    .HXI_gs .HXI_gs_lvl select.HXI_dynamiccontent_customDropDown { width: 54px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .HXI_gs * { transition: none !important; }
+}

@@ -187,5 +187,8 @@ source fishing_bait_affinity.sql;
 source hxi_changes.sql;
 \! echo hxi_changes done
 
-
+\! echo dat_details
+DROP TABLE IF EXISTS `dat_details`;
+source DAT_details.sql;
+\! echo dat_details done
 

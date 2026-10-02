@@ -47,7 +47,7 @@ class APIModuleFishingSearch extends ApiBase {
 
 		if ( !$finalQuery[0] )  return "<i><b> No records (items) found</i></b>";
 
-        $html .= FFXIPackageHelper_HTMLTableHelper::table_FishingQuery($finalQuery);
+        $html .= HXI_HTMLTableHelper::table_FishingQuery($finalQuery);
 
 		return $html;
 	}

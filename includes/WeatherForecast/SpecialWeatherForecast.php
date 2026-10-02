@@ -8,9 +8,9 @@ class SpecialWeatherForecast extends SpecialPage {
 
     }
 
-    static function onBeforePageDisplay( $out, $skin ) : void  { 
+    static function onBeforePageDisplay( $out, $skin ) : void  {
         //wfDebugLog( 'Equipsets', get_called_class() . ":" . $out->getTitle() );
-        if ( $out->getTitle() == "Special:WeatherForecast" )  $out->addModules(['FFXIPackageHelper_WeatherForecast']);
+        if ( $out->getTitle() == "Special:WeatherForecast" )  $out->addModules(['HXI_WeatherForecast']);
     }
 
     function zoneNameArray($weatherArray){
@@ -116,7 +116,7 @@ class SpecialWeatherForecast extends SpecialPage {
 
 
     function showWeatherPressed($weatherArray, $zone, $weatherType){
-        $html = FFXIPackageHelper_HTMLTableHelper::tableHeader_Forecast();
+        $html = HXI_HTMLTableHelper::tableHeader_Forecast();
 
         $time = new VanaTime();
         //print_r($zone ." : ". $weatherType ." : ". count($weatherArray) );

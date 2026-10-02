@@ -13,15 +13,27 @@
         "SpecialWeatherForecast": "includes/WeatherForecast/SpecialWeatherForecast.php",
         "SpecialDiggingWeatherForecast": "includes/WeatherForecast/SpecialDiggingWeatherForecast.php",
         "SpecialDiggingWeatherForecast_Retail": "includes/WeatherForecast/SpecialDiggingWeatherForecast_Retail.php",
-        "ZoneForecast": "includes/WeatherForecast/FFXIPackageHelper_ZoneForecast.php",
+        "ZoneForecast": "includes/WeatherForecast/HXI_ZoneForecast.php",
         "SpecialEquipsets": "includes/SpecialPages/SpecialEquipsets.php",
 
-        "FFXIPH_Character": "includes/Models/FFXIPH_Character.php",
-        "FFXIPH_Mob": "includes/Models/FFXIPH_Mob.php",
-        "FFXIPH_MobUtils": "includes/Models/FFXIPH_MobUtils.php",
-        "FFXIPH_StatsUtils": "includes/helpers/data/FFXIPH_StatsUtils.php",
-        "FFXIPH_Races": "includes/Models/FFXIPH_Races.php",
-        "FFXIPH_ItemDescription": "includes/Models/FFXIPH_ItemDescription.php",
+        "HXI_Mob": "includes/Models/HXI_Mob.php",
+        "HXI_BaseStatCalculator": "includes/Models/HXI_BaseStatCalculator.php",
+        "HXI_MobStatCalculator": "includes/Models/HXI_MobStatCalculator.php",
+        "HXI_StatsUtils": "includes/helpers/data/HXI_StatsUtils.php",
+        "HXI_ItemDescription": "includes/Models/HXI_ItemDescription.php",
+
+        "HXI_EquipSlot": "includes/Models/HXI_EquipSlot.php",
+        "HXI_Item": "includes/Models/HXI_Item.php",
+        "HXI_ItemFactory": "includes/Models/HXI_ItemFactory.php",
+        "HXI_CustomItemIconMap": "includes/Models/HXI_CustomItemIconMap.php",
+        "HXI_Weapon": "includes/Models/HXI_Weapon.php",
+        "HXI_Equipment": "includes/Models/HXI_Equipment.php",
+        "HXI_Race": "includes/Models/HXI_Race.php",
+        "HXI_MeritsCodec": "includes/Models/HXI_MeritsCodec.php",
+        "HXI_Character": "includes/Models/HXI_Character.php",
+        "HXI_EquipmentSet": "includes/Models/HXI_EquipmentSet.php",
+        "HXI_Skill": "includes/Models/HXI_Skill.php",
+        "HXI_MobType": "includes/Models/HXI_MobType.php",
 
         "APIModuleDropRateSearch" : "includes/APIModules/APIModuleDropRateSearch.php",
         "APIModuleRecipeSearch" : "includes/APIModules/APIModuleRecipeSearch.php",
@@ -29,39 +41,40 @@
         "APIModuleEquipsets" : "includes/APIModules/APIModuleEquipsets.php",
         "APIModuleFishingSearch" : "includes/APIModules/APIModuleFishingSearch.php",
 
-        "FFXIPH_SkillGrades": "includes/helpers/data/FFXIPH_SkillGrades.php",
-        "FFXIPH_MathHelper": "includes/helpers/data/FFXIPH_MathHelper.php",
-        "FFXIPackageHelper_Stats": "includes/helpers/data/FFXIPackageHelper_Stats.php",
-        "FFXIPackageHelper_Effects": "includes/helpers/FFXIPackageHelper_Effects.php",
-        "FFXIPackageHelper_Equipment": "includes/helpers/data/FFXIPackageHelper_Equipment.php",
-        "FFXIPackageHelper_Variables": "includes/helpers/data/FFXIPackageHelper_Variables.php",
-        "FFXIPackageHelper_ItemDetails": "includes/helpers/data/FFXIPackageHelper_ItemDetails.php",
-        "FFXIPackageHelper_HTMLTableHelper": "includes/helpers/FFXIPackageHelper_HTMLTableHelper.php",
-        "FFXIPackageHelper_HTMLTabFishingSearch": "includes/Tabs/FFXIPackageHelper_HTMLTabFishingSearch.php",
-        "FFXIPackageHelper_HTMLOptions": "includes/Tabs/FFXIPackageHelper_HTMLOptions.php",
-        "FFXIPH_HTMLTabMobSearch": "includes/Tabs/FFXIPH_HTMLTabMobSearch.php",
+        "HXI_SkillGrades": "includes/helpers/data/HXI_SkillGrades.php",
+        "HXI_MathHelper": "includes/helpers/data/HXI_MathHelper.php",
+        "HXI_CharacterStatCalculator": "includes/helpers/data/HXI_CharacterStatCalculator.php",
+        "HXI_Effects": "includes/helpers/HXI_Effects.php",
+        "HXI_EquipmentParser": "includes/helpers/data/HXI_EquipmentParser.php",
+        "HXI_Variables": "includes/helpers/data/HXI_Variables.php",
+        "HXI_ModDictionary": "includes/helpers/data/HXI_ModDictionary.php",
+        "HXI_ItemDetails": "includes/helpers/data/HXI_ItemDetails.php",
+        "HXI_HTMLTableHelper": "includes/helpers/HXI_HTMLTableHelper.php",
+        "HXI_HTMLTabFishingSearch": "includes/tabs/HXI_HTMLTabFishingSearch.php",
+        "HXI_HTMLOptions": "includes/tabs/HXI_HTMLOptions.php",
+        "HXI_HTMLTabMobSearch": "includes/tabs/HXI_HTMLTabMobSearch.php",
 
-        "FFXIPH_LSBSearch_HTMLTabsHelper": "includes/Tabs/FFXIPH_LSBSearch_HTMLTabsHelper.php",
-        "FFXIPackageHelper_HTMLTabDropRates": "includes/Tabs/FFXIPackageHelper_HTMLTabDropRates.php",
-        "FFXIPackageHelper_HTMLTabRecipeSearch": "includes/Tabs/FFXIPackageHelper_HTMLTabRecipeSearch.php",
-        "FFXIPackageHelper_HTMLTabEquipSearch": "includes/Tabs/FFXIPackageHelper_HTMLTabEquipSearch.php",
-        "FFXIPackageHelper_HTMLTabAdmin": "includes/Tabs/FFXIPackageHelper_HTMLTabAdmin.php",
-        "FFXIPackageHelper_QueryController": "includes/helpers/FFXIPackageHelper_QueryController.php",
-        "FFXIPH_APIHelper": "includes/helpers/FFXIPH_APIHelper.php",
+        "HXI_LSBSearch_HTMLTabsHelper": "includes/tabs/HXI_LSBSearch_HTMLTabsHelper.php",
+        "HXI_HTMLTabDropRates": "includes/tabs/HXI_HTMLTabDropRates.php",
+        "HXI_HTMLTabRecipeSearch": "includes/tabs/HXI_HTMLTabRecipeSearch.php",
+        "HXI_HTMLTabEquipSearch": "includes/tabs/HXI_HTMLTabEquipSearch.php",
+        "HXI_HTMLTabAdmin": "includes/tabs/HXI_HTMLTabAdmin.php",
+        "HXI_QueryController": "includes/helpers/HXI_QueryController.php",
+        "HXI_APIHelper": "includes/helpers/HXI_APIHelper.php",
 
-        "ExclusionsHelper": "includes/helpers/FFXIPackageHelper_ExclusionsHelper.php",
-        "ParserHelper": "includes/helpers/FFXIPackageHelper_ParserHelper.php",
-        "DataModel": "includes/helpers/FFXIPackageHelper_DataModel.php",
-        "DatabaseConnection": "includes/helpers/Database Management/FFXIPH_DatabaseConnection.php",
-        "DatabaseQueryWrapper": "includes/helpers/Database Management/FFXIPH_DatabaseQueryWrapper.php",
+        "ExclusionsHelper": "includes/helpers/HXI_ExclusionsHelper.php",
+        "ParserHelper": "includes/helpers/HXI_ParserHelper.php",
+        "DataModel": "includes/helpers/HXI_DataModel.php",
+        "DatabaseConnection": "includes/helpers/Database Management/HXI_DatabaseConnection.php",
+        "DatabaseQueryWrapper": "includes/helpers/Database Management/HXI_DatabaseQueryWrapper.php",
 
-        "WeatherForecast_ElementMaps": "includes/helpers/FFXIPackageHelper_WeatherForecast_ElementMaps.php",
+        "WeatherForecast_ElementMaps": "includes/helpers/HXI_WeatherForecast_ElementMaps.php",
 
-        "FFXIPackageHelper_Equipsets": "includes/helpers/FFXIPackageHelper_Equipsets.php",
-        "FFXIPackageHelper_LuaSetsHelper": "includes/helpers/data/FFXIPackageHelper_LuaSetsHelper.php",
+        "HXI_Equipsets": "includes/helpers/HXI_Equipsets.php",
+        "HXI_LuaSetsHelper": "includes/helpers/data/HXI_LuaSetsHelper.php",
 
-        "VanaTime": "includes/helpers/FFXIPackageHelper_VanaTime.php",
-        "FFXIPackageHelper_ShowMobDropTable": "includes/Page Directs/FFXIPackageHelper_ShowMobDropTable.php"
+        "VanaTime": "includes/helpers/HXI_VanaTime.php",
+        "HXI_ShowMobDropTable": "includes/Page Directs/HXI_ShowMobDropTable.php"
 	},
     "SpecialPages": {
         "LSBSearch": "SpecialLSBSearch",
@@ -90,75 +103,75 @@
         ],
         "ParserFirstCallInit": [
             "ZoneForecast::onParserInit",
-            "FFXIPackageHelper_ShowMobDropTable::onParserInit"
+            "HXI_ShowMobDropTable::onParserInit"
         ]
     },
 	"ResourceModules": {
-        "FFXIPackageHelper_WeatherForecast" : {
+        "HXI_WeatherForecast" : {
 			"localBasePath": "",
 			"remoteExtPath": "LSBSearch",
 			"packageFiles": [
-				"includes/js/FFXIPackageHelper_sortTable.js"
+				"includes/js/HXI_sortTable.js"
 			],
 			"styles": [
-				"includes/WeatherForecast/FFXIPackageHelper_WeatherForecast_Styles.css"
+				"includes/WeatherForecast/HXI_WeatherForecast_Styles.css"
 			]
 		},
-        "FFXIPackageHelper_TabsController" : {
+        "HXI_TabsController" : {
 			"localBasePath": "",
 			"remoteExtPath": "LSBSearch",
 			"packageFiles": [
-                "includes/js/tabs/FFXIPackageHelper_TabsController.js",
-                "includes/js/tabs/Equipsets/FFXIPackageHelper_ActionAPI.js",
-                "includes/js/tabs/Equipsets/FFXIPackageHelper_DataManager.js",
-                "includes/js/tabs/FFXIPackageHelper_ShowTabs.js",
-                "includes/js/tabs/FFXIPackageHelper_TabFishing.js",
-                "includes/js/tabs/FFXIPackageHelper_TabRecipes.js",
-                "includes/js/tabs/FFXIPackageHelper_TabEquipment.js",
-                "includes/js/tabs/FFXIPackageHelper_TabDropRates.js",
-                "includes/js/tabs/FFXIPackageHelper_TabMobSearch.js",
-                "includes/js/tabs/Equipsets/FFXIPackageHelper_Tooltips.js",
-                "includes/js/tabs/Equipsets/FFXIPackageHelper_LuaSets.js",
-                "includes/js/tabs/Equipsets/Modals/FFXIPackageHelper_ModalCombatSimMobSelect.js"
+                "includes/js/tabs/HXI_TabsController.js",
+                "includes/js/tabs/Equipsets/HXI_ActionAPI.js",
+                "includes/js/tabs/Equipsets/HXI_DataManager.js",
+                "includes/js/tabs/HXI_ShowTabs.js",
+                "includes/js/tabs/HXI_TabFishing.js",
+                "includes/js/tabs/HXI_TabRecipes.js",
+                "includes/js/tabs/HXI_TabEquipment.js",
+                "includes/js/tabs/HXI_TabDropRates.js",
+                "includes/js/tabs/HXI_TabMobSearch.js",
+                "includes/js/tabs/Equipsets/HXI_Tooltips.js",
+                "includes/js/tabs/Equipsets/HXI_LuaSets.js",
+                "includes/js/tabs/Equipsets/Modals/HXI_ModalCombatSimMobSelect.js"
             ],
             "styles": [
-				"resources/styles/FFXIPackageHelper_Forms.css",
-                "resources/styles/FFXIPH_MobSearch.css",
+				"resources/styles/HXI_Forms.css",
+                "resources/styles/HXI_MobSearch.css",
                 "resources/styles/tabs.css",
                 "resources/styles/hint.css"
 			]
         },
-        "FFXIPackageHelper_Equipsets" : {
+        "HXI_Equipsets" : {
 			"localBasePath": "",
             "remoteExtPath": "LSBSearch",
 			"packageFiles": [
-                "includes/js/tabs/Equipsets/FFXIPackageHelper_Equipsets_TabsController.js",
-                "includes/js/tabs/FFXIPackageHelper_ShowTabs.js",
-                "includes/js/tabs/Equipsets/FFXIPackageHelper_ActionAPI.js",
-                "includes/js/tabs/Equipsets/FFXIPackageHelper_ActionButtons.js",
-                "includes/js/tabs/Equipsets/FFXIPackageHelper_DataManager.js",
-                "includes/js/tabs/Equipsets/FFXIPackageHelper_LuaSets.js",
-                "includes/js/tabs/Equipsets/FFXIPackageHelper_Tooltips.js",
+                "includes/js/tabs/Equipsets/HXI_Equipsets_TabsController.js",
+                "includes/js/tabs/HXI_ShowTabs.js",
+                "includes/js/tabs/Equipsets/HXI_ActionAPI.js",
+                "includes/js/tabs/Equipsets/HXI_ActionButtons.js",
+                "includes/js/tabs/Equipsets/HXI_DataManager.js",
+                "includes/js/tabs/Equipsets/HXI_LuaSets.js",
+                "includes/js/tabs/Equipsets/HXI_Tooltips.js",
 
-                "includes/js/tabs/Equipsets/Modals/FFXIPackageHelper_ModalWindow.js",
-                "includes/js/tabs/Equipsets/Modals/FFXIPackageHelper_ModalSetManagement.js",
-                "includes/js/tabs/Equipsets/Modals/FFXIPackageHelper_ModalCharManagement.js",
-                "includes/js/tabs/Equipsets/Modals/FFXIPackageHelper_ModalCharAdd.js",
-                "includes/js/tabs/Equipsets/Modals/FFXIPackageHelper_ModalCharRemove.js",
-                "includes/js/tabs/Equipsets/Modals/FFXIPackageHelper_ModalCombatSimMobSelect.js",
+                "includes/js/tabs/Equipsets/Modals/HXI_ModalWindow.js",
+                "includes/js/tabs/Equipsets/Modals/HXI_ModalSetManagement.js",
+                "includes/js/tabs/Equipsets/Modals/HXI_ModalCharManagement.js",
+                "includes/js/tabs/Equipsets/Modals/HXI_ModalCharAdd.js",
+                "includes/js/tabs/Equipsets/Modals/HXI_ModalCharRemove.js",
+                "includes/js/tabs/Equipsets/Modals/HXI_ModalCombatSimMobSelect.js",
 
-                "includes/js/tabs/Equipsets/FFXIPackageHelper_TabEquipsets.js",
-                "includes/js/tabs/Equipsets/FFXIPackageHelper_TabCharacters.js",
-                "includes/js/tabs/FFXIPackageHelper_TabMobSearch.js",
-                "includes/js/tabs/Equipsets/FFXIPH_TabImportLua.js",
+                "includes/js/tabs/Equipsets/HXI_TabEquipsets.js",
+                "includes/js/tabs/Equipsets/HXI_TabCharacters.js",
+                "includes/js/tabs/HXI_TabMobSearch.js",
+                "includes/js/tabs/Equipsets/HXI_TabImportLua.js",
 
-                "includes/js/FFXIPackageHelper_copyURLToClipboard.js"
+                "includes/js/HXI_copyURLToClipboard.js"
 			],
 			"styles": [
-                "resources/styles/FFXIPackageHelper_Forms.css",
-                "resources/styles/FFXIPackageHelper_Equipsets_Styles.css",
-                "resources/styles/FFXIPackageHelper_Equipsets_SetList.css",
-                "resources/styles/FFXIPackageHelper_MWOverrides.css",
+                "resources/styles/HXI_Forms.css",
+                "resources/styles/HXI_Equipsets_Styles.css",
+                "resources/styles/HXI_Equipsets_GearSets.css",
+                "resources/styles/HXI_MWOverrides.css",
                 "resources/styles/tabs.css",
                 "resources/styles/hint.css"
 			]
@@ -227,7 +240,7 @@
     "requires": {
         "MediaWiki": ">= 1.39.0",
         "platform": {
-            "php": ">= 5.6"
+            "php": ">= 8.1"
         }
 
     }

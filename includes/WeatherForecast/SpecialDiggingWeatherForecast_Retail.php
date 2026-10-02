@@ -19,7 +19,7 @@ class SpecialDiggingWeatherForecast_Retail extends SpecialPage {
         $this->setHeaders();
 
         $time = new VanaTime();
-        $html = FFXIPackageHelper_HTMLTableHelper::tableHeader_Forecast();
+        $html = HXI_HTMLTableHelper::tableHeader_Forecast();
 
         $db = new DatabaseQueryWrapper();
         $weatherArray = $db->getWeather(true, true);

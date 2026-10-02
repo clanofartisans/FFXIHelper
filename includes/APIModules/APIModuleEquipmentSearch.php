@@ -33,18 +33,23 @@ class APIModuleEquipmentSearch extends ApiBase {
     }
 
     private function queryEquipment($queryData){
-        $dm = new DataModel();
         $db = new DatabaseQueryWrapper();
 
-        // USE THIS ONEs
         $initialQuery = $db->getEquipmentFromDB($queryData);
         if ( count($initialQuery) > 0 )  $db->incrementHitCounter("equipment");
 
-        $initialQuery = $dm->parseEquipment($initialQuery, $queryData[1]);
+        $items = HXI_ItemFactory::fromFullItemRowsGrouped($initialQuery);
+
+        $job = $queryData[1] ?? null;
+        if ( $job != null && $job > 0 ) {
+            $items = array_filter( $items, function($item) use ($job) {
+                return ParserHelper::checkJob($job, $item->jobs);
+            });
+        }
 
         $html = "";
 
-        $html .= FFXIPackageHelper_HTMLTableHelper::table_EquipmentQuery($initialQuery);
+        $html .= HXI_HTMLTableHelper::table_EquipmentQuery($items);
         return $html;
 	}
 

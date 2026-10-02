@@ -8,7 +8,7 @@ class SpecialDiggingWeatherForecast extends SpecialPage {
 
     static function onBeforePageDisplay( $out, $skin ) : void  { 
         //wfDebugLog( 'Equipsets', get_called_class() . ":" . $out->getTitle() );
-        if ( $out->getTitle() == "Special:DiggingWeatherForecast" )  $out->addModules(['FFXIPackageHelper_WeatherForecast']);
+        if ( $out->getTitle() == "Special:DiggingWeatherForecast" )  $out->addModules(['HXI_WeatherForecast']);
     }
 
     function execute( $par ) {
@@ -20,7 +20,7 @@ class SpecialDiggingWeatherForecast extends SpecialPage {
         $this->setHeaders();
 
         $time = new VanaTime();
-        $html = FFXIPackageHelper_HTMLTableHelper::tableHeader_Forecast();
+        $html = HXI_HTMLTableHelper::tableHeader_Forecast();
 
         $db = new DatabaseQueryWrapper();
         $weatherArray = $db->getWeather(true);

@@ -1,5 +1,5 @@
  /* Style the tab */
- .FFXIPackageHelper_tabs {
+ .HXI_tabs {
     overflow: hidden;
     overflow-x: auto;
     border: 1px solid #ccc;
@@ -10,7 +10,7 @@
   }
   
   /* Style the buttons that are used to open the tab content */
-  .FFXIPackageHelper_tabs button {
+  .HXI_tabs button {
     background-color: inherit;
     float: left;
     border: none;
@@ -21,12 +21,12 @@
   }
   
   /* Change background color of buttons on hover */
-  .FFXIPackageHelper_tabs button:hover {
+  .HXI_tabs button:hover {
     background-color: #ddd;
   }
   
   /* Create an active/current tablink class */
-  .FFXIPackageHelper_tabs button.active {
+  .HXI_tabs button.active {
     background-color: #ccc;
   }
   

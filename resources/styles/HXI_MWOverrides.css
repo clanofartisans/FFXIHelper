@@ -1,0 +1,49 @@
+/*
+  Keep Equipsets content inside the content column so it can't widen the page.
+  min-width:0 lets flex/grid children shrink below their content size.
+*/
+body.HXI-equipsets #mw-content,
+body.HXI-equipsets #mw-content-text,
+body.HXI-equipsets #mw-content-text > * {
+    min-width: 0;
+    max-width: 100%;
+}
+
+body.HXI-equipsets .HXI_tabs,
+body.HXI-equipsets .tabcontent {
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+body.HXI-equipsets .tabcontent {
+    overflow-x: auto;
+}
+
+/*
+  Table override for all tables on the Equipsets page
+*/
+.HXI_Equipsets_container > .content-table-wrapper.overflowed.scroll-right > .content-table,
+.HXI_Equipsets_setManagement_setsList > .content-table-wrapper.overflowed.scroll-right
+{
+    /* background-color: rgb(65, 255, 65); */
+}
+
+
+.HXI_Equipsets_container > .content-table-wrapper.overflowed.scroll-right > .content-table,
+.HXI_Equipsets_setManagement_setsList > .content-table-wrapper.overflowed.scroll-right > .content-table{
+    overflow-x: hidden;
+}
+
+.HXI_Equipsets_container > .content-table,
+.HXI_Equipsets_setManagement_setsList > .content-table{
+    overflow-x: hidden;
+}
+
+.HXI_Equipsets_container > .content-table-wrapper.overflowed.scroll-right > .content-table-right,
+.HXI_Equipsets_setManagement_setsList > .content-table-wrapper.overflowed.scroll-right > .content-table-right{
+    box-shadow: none;
+    border-left: none;
+}
+
+
