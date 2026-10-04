@@ -40,12 +40,23 @@ class DatabaseQueryWrapper {
     private function openLSBSearchConnection() { return $this->database->openConnection("LSB_Data"); }
     private function openEquipsetsConnection() { return $this->database->openConnection("Equipsets"); }
 
+    private $quoteConnection = null;
+
+    /**
+     * Returns $value as a quoted, escaped SQL string literal, so request values can't break out of the
+     * conditions they are put into. LIKE wildcards in $value (% and _) keep their meaning.
+     */
+    private function quote($value) {
+        if ( $this->quoteConnection === null ) $this->quoteConnection = $this->openLSBSearchConnection();
+        return $this->quoteConnection->addQuotes( (string)$value );
+    }
+
     public function getHitCounter($tab) {
 		$dbr = $this->openLSBSearchConnection();
 		$tabHitCounter = $dbr->newSelectQueryBuilder()
 			->select( [ 'hitcount' ] )
 			->from( 'search_counters' )
-			->where( [ "search_counters.page LIKE '%$tab%'" ] )
+			->where( [ "search_counters.page LIKE " . $this->quote("%$tab%") ] )
             ->fetchResultSet();
 
         foreach($tabHitCounter as $row){
@@ -159,7 +170,7 @@ class DatabaseQueryWrapper {
 
     function getZoneWeather($zone, $numberOfDays ) {
 		$dbr = $this->openLSBSearchConnection();
-        $query = "zone_weather.zone = $zone";
+        $query = "zone_weather.zone = " . intval($zone);
 		$weather = $dbr->newSelectQueryBuilder()
 			->select( [ '*' ] )
 			->from( 'zone_weather' )
@@ -320,7 +331,7 @@ class DatabaseQueryWrapper {
     
     public function getZoneForecastFromDB($zone){
         $dbr = $this->openLSBSearchConnection();
-        $query = "zone_weather.zone = $zone";
+        $query = "zone_weather.zone = " . intval($zone);
 		return $dbr->newSelectQueryBuilder()
 			->select( [ '*' ] )
 			->from( 'zone_weather' )
@@ -425,19 +436,19 @@ class DatabaseQueryWrapper {
         $query = $this->exclude_MOBGROUPS_OOE($query);
 
         if ( $mobNameSearch !=  '' ) {
-            array_push($query, "mob_groups.name LIKE '%$mobNameSearch%'");
+            array_push($query, "mob_groups.name LIKE " . $this->quote("%$mobNameSearch%"));
 		}
 
         if ( $includeFished == 0 ){ $query = $this->exclude_MOBGROUPS_fished($query); }
 
 
         if ( $itemNameSearch !=  '' ) {
-			array_push($query, "item_basic.name LIKE '%$itemNameSearch%' OR item_basic.sortname LIKE '%$itemNameSearch%'");
+			array_push($query, "item_basic.name LIKE " . $this->quote("%$itemNameSearch%") . " OR item_basic.sortname LIKE " . $this->quote("%$itemNameSearch%"));
 		}   
 
 		if ( $zoneNameSearch !=  'searchallzones' ) {
 			$zoneNameSearch = ParserHelper::replaceSpaces($zoneNameSearch);
-			array_push($query, "zone_settings.name = '$zoneNameSearch'");
+			array_push($query, "zone_settings.name = " . $this->quote($zoneNameSearch));
 		}
 		if ( $excludeNMs == 1) {
 			array_push($query, "mob_pools.mobType != 2");
@@ -445,10 +456,10 @@ class DatabaseQueryWrapper {
 			array_push($query, "mob_pools.mobType != 18");
 		}
 		if ( $levelRangeMIN > 0){
-			array_push($query, "mob_groups_levels.minLevel >= '$levelRangeMIN'");
+			array_push($query, "mob_groups_levels.minLevel >= " . $this->quote($levelRangeMIN));
 		}
 		if ( $levelRangeMAX > 0){
-			array_push($query, "mob_groups_levels.maxLevel <= '$levelRangeMAX'");
+			array_push($query, "mob_groups_levels.maxLevel <= " . $this->quote($levelRangeMAX));
 		}
         if ( $includeSteal == 1 ){
 			array_push($query, "mob_droplist.dropType <= 2"); // steal = 2
@@ -508,7 +519,7 @@ class DatabaseQueryWrapper {
                     "mob_droplist.dropid != 0 ",
                     //"mob_droplist.dropType != 4",  // removing DESPOIL - as its OOE
                     $this->mobContent,
-                    "mob_groups.name LIKE '%$mobNameSearch%'",
+                    "mob_groups.name LIKE " . $this->quote("%$mobNameSearch%"),
                 ];
 
         $query = $this->exclude_MOBGROUPS_OOE($query);
@@ -571,13 +582,13 @@ class DatabaseQueryWrapper {
 
 		$query = [ 
 			//"zone_settings.name" => $zoneNameSearch,
-			"bcnm_records.name LIKE '%$bcnmNameSearch%'",
-			"item_basic.name LIKE '%$itemNameSearch%'" ];
+			"bcnm_records.name LIKE " . $this->quote("%$bcnmNameSearch%"),
+			"item_basic.name LIKE " . $this->quote("%$itemNameSearch%") ];
 
 			//up_property = 'enotifwatchlistpages'
 		if ( $zoneNameSearch !=  'searchallzones' ) {
 			//$str = "zone_settings.name => $zoneNameSearch';
-			array_push($query, "zone_settings.name = '$zoneNameSearch'");
+			array_push($query, "zone_settings.name = " . $this->quote($zoneNameSearch));
 		}
 
 
@@ -618,14 +629,14 @@ class DatabaseQueryWrapper {
 
         if ( !is_null($mobname) )  {
             $mobNameSearch = ParserHelper::replaceSpaces($mobname);
-            array_push($query, "mob_groups.name LIKE '%$mobNameSearch%'");
+            array_push($query, "mob_groups.name LIKE " . $this->quote("%$mobNameSearch%"));
         }
         if ( !is_null($zonename) && $zonename != 'searchallzones')  {  
             $zoneNameSearch = ParserHelper::replaceSpaces($zonename);
-            array_push($query, "zone_settings.name = '$zoneNameSearch'");
+            array_push($query, "zone_settings.name = " . $this->quote($zoneNameSearch));
 		}
         if ( !is_null($moblevel) && intval($moblevel) > 0 ){
-            array_push($query, "(mob_groups_levels.minLevel <= '$moblevel') AND (mob_groups_levels.maxLevel >= '$moblevel')");
+            array_push($query, "(mob_groups_levels.minLevel <= " . $this->quote($moblevel) . ") AND (mob_groups_levels.maxLevel >= " . $this->quote($moblevel) . ")");
         }
         
         //wfDebugLog( 'Equipsets', get_called_class() . ":" . $params['action'] . ":" . $zonename .":". $mobname . ":" . $moblevel . ":" . gettype($moblevel)  );
@@ -673,13 +684,13 @@ class DatabaseQueryWrapper {
         $query = $this->exclude_MOBGROUPS_OOE($query);
 
         $mobNameSearch = ParserHelper::replaceSpaces($mobname);
-        array_push($query, "mob_groups.name = '$mobNameSearch'");
+        array_push($query, "mob_groups.name = " . $this->quote($mobNameSearch));
 
         $zoneNameSearch = ParserHelper::replaceSpaces($zonename);
-        array_push($query, "zone_settings.name = '$zoneNameSearch'");
+        array_push($query, "zone_settings.name = " . $this->quote($zoneNameSearch));
         
         if ( $moblevel > 0 ){
-            array_push($query, "(mob_groups_levels.minLevel <= '$moblevel') AND (mob_groups_levels.maxLevel >= '$moblevel')");
+            array_push($query, "(mob_groups_levels.minLevel <= " . $this->quote($moblevel) . ") AND (mob_groups_levels.maxLevel >= " . $this->quote($moblevel) . ")");
         }
 	
         $dbr = $this->openLSBSearchConnection();
@@ -756,7 +767,7 @@ class DatabaseQueryWrapper {
     public function getTraits( $mlvl, $slvl, $mjob, $sjob){
         $dbr = $this->openLSBSearchConnection();
         $query = [
-            "( traits.job = '$mjob' AND traits.level <= '$mlvl') OR (traits.job = '$sjob' AND traits.level <= '$slvl')",
+            "( traits.job = " . $this->quote($mjob) . " AND traits.level <= " . $this->quote($mlvl) . ") OR (traits.job = " . $this->quote($sjob) . " AND traits.level <= " . $this->quote($slvl) . ")",
         ];
 
         return $dbr->newSelectQueryBuilder()
@@ -779,7 +790,7 @@ class DatabaseQueryWrapper {
                         'mob_pool_mods.is_mob_mod'
 						] )
 			->from( 'mob_pool_mods' )
-			->where( "mob_pool_mods.poolid = '$poolid'"	)
+			->where( "mob_pool_mods.poolid = " . $this->quote($poolid)	)
 			->fetchResultSet(); 
     }
 
@@ -792,7 +803,7 @@ class DatabaseQueryWrapper {
                         'mob_family_mods.is_mob_mod'
 						] )
 			->from( 'mob_family_mods' )
-			->where( "mob_family_mods.familyid = '$familyid'"	)
+			->where( "mob_family_mods.familyid = " . $this->quote($familyid)	)
 			->fetchResultSet(); 
     }
 
@@ -863,48 +874,48 @@ class DatabaseQueryWrapper {
         }
         //throw new Exception ( json_encode($query) );
 
-        if ( isset($crystal) && $crystal != 0 ){ array_push ( $query, "synth_recipes.Crystal = '$crystal'"); }
+        if ( isset($crystal) && $crystal != 0 ){ array_push ( $query, "synth_recipes.Crystal = " . $this->quote($crystal)); }
 
         switch($craftType){
             case 'Wood':
                 array_push ( $query, "synth_recipes.Wood != 0" ) ;
-                if ( $mincraftlvl != '0' ) array_push ( $query, "synth_recipes.Wood >= '$mincraftlvl'")  ;
-                if ( $maxcraftlvl != '0' ) array_push ( $query, "synth_recipes.Wood <= '$maxcraftlvl'") ;
+                if ( $mincraftlvl != '0' ) array_push ( $query, "synth_recipes.Wood >= " . $this->quote($mincraftlvl))  ;
+                if ( $maxcraftlvl != '0' ) array_push ( $query, "synth_recipes.Wood <= " . $this->quote($maxcraftlvl)) ;
                 break;
             case 'Smith':
                 array_push ( $query, "synth_recipes.Smith != 0" ) ;
-                if ( $mincraftlvl != "0" ) array_push ( $query, "synth_recipes.Smith >= '$mincraftlvl'" ) ;
-                if ( $maxcraftlvl != "0" ) array_push ( $query, "synth_recipes.Smith <= '$maxcraftlvl'" ) ;
+                if ( $mincraftlvl != "0" ) array_push ( $query, "synth_recipes.Smith >= " . $this->quote($mincraftlvl) ) ;
+                if ( $maxcraftlvl != "0" ) array_push ( $query, "synth_recipes.Smith <= " . $this->quote($maxcraftlvl) ) ;
                 break;
             case 'Gold':
                 array_push ( $query, "synth_recipes.Gold != 0" ) ;
-                if ( $mincraftlvl != "0" ) array_push ( $query, "synth_recipes.Gold >= '$mincraftlvl'" ) ;
-                if ( $maxcraftlvl != "0" ) array_push ( $query, "synth_recipes.Gold <= '$maxcraftlvl'" ) ;
+                if ( $mincraftlvl != "0" ) array_push ( $query, "synth_recipes.Gold >= " . $this->quote($mincraftlvl) ) ;
+                if ( $maxcraftlvl != "0" ) array_push ( $query, "synth_recipes.Gold <= " . $this->quote($maxcraftlvl) ) ;
                 break;
             case 'Cloth':
                 array_push ( $query, "synth_recipes.Cloth != 0" ) ;
-                if ( $mincraftlvl != "0" ) array_push ( $query, "synth_recipes.Cloth >= '$mincraftlvl'" ) ;
-                if ( $maxcraftlvl != "0" ) array_push ( $query, "synth_recipes.Cloth <= '$maxcraftlvl'" ) ;
+                if ( $mincraftlvl != "0" ) array_push ( $query, "synth_recipes.Cloth >= " . $this->quote($mincraftlvl) ) ;
+                if ( $maxcraftlvl != "0" ) array_push ( $query, "synth_recipes.Cloth <= " . $this->quote($maxcraftlvl) ) ;
                 break;
             case 'Leather':
                 array_push ( $query, "synth_recipes.Leather != 0" ) ;
-                if ( $mincraftlvl != "0" ) array_push ( $query, "synth_recipes.Leather >= '$mincraftlvl'" ) ;
-                if ( $maxcraftlvl != "0" ) array_push ( $query, "synth_recipes.Leather <= '$maxcraftlvl'" ) ;
+                if ( $mincraftlvl != "0" ) array_push ( $query, "synth_recipes.Leather >= " . $this->quote($mincraftlvl) ) ;
+                if ( $maxcraftlvl != "0" ) array_push ( $query, "synth_recipes.Leather <= " . $this->quote($maxcraftlvl) ) ;
                 break;
             case 'Bone':
                 array_push ( $query, "synth_recipes.Bone != 0" ) ;
-                if ( $mincraftlvl != "0" ) array_push ( $query, "synth_recipes.Bone >= '$mincraftlvl'" ) ;
-                if ( $maxcraftlvl != "0" ) array_push ( $query, "synth_recipes.Bone <= '$maxcraftlvl'" ) ;
+                if ( $mincraftlvl != "0" ) array_push ( $query, "synth_recipes.Bone >= " . $this->quote($mincraftlvl) ) ;
+                if ( $maxcraftlvl != "0" ) array_push ( $query, "synth_recipes.Bone <= " . $this->quote($maxcraftlvl) ) ;
                 break;
             case 'Alchemy':
                 array_push ( $query, "synth_recipes.Alchemy != 0" ) ;
-                if ( $mincraftlvl != "0" ) array_push ( $query, "synth_recipes.Alchemy >= '$mincraftlvl'" ) ;
-                if ( $maxcraftlvl != "0" ) array_push ( $query, "synth_recipes.Alchemy <= '$maxcraftlvl'" ) ;
+                if ( $mincraftlvl != "0" ) array_push ( $query, "synth_recipes.Alchemy >= " . $this->quote($mincraftlvl) ) ;
+                if ( $maxcraftlvl != "0" ) array_push ( $query, "synth_recipes.Alchemy <= " . $this->quote($maxcraftlvl) ) ;
                 break;
             case 'Cook':
                 array_push ( $query, "synth_recipes.Cook != 0" ) ;
-                if ( $mincraftlvl != "0" ) array_push ( $query, "synth_recipes.Cook >= '$mincraftlvl'" ) ;
-                if ( $maxcraftlvl != "0" ) array_push ( $query, "synth_recipes.Cook <= '$maxcraftlvl'" ) ;
+                if ( $mincraftlvl != "0" ) array_push ( $query, "synth_recipes.Cook >= " . $this->quote($mincraftlvl) ) ;
+                if ( $maxcraftlvl != "0" ) array_push ( $query, "synth_recipes.Cook <= " . $this->quote($maxcraftlvl) ) ;
                 break;
             default;
         }
@@ -934,8 +945,8 @@ class DatabaseQueryWrapper {
     public function getItemIDsFromDB($name, $db = NULL, $mustMatch = NULL){
         if ( $db == NULL ) $db = $this->openLSBSearchConnection();
 
-        $query = [ "item_basic.name LIKE '%$name%'" ];
-        if ( $mustMatch == true ) $query = [ "item_basic.name = '$name'" ];
+        $query = [ "item_basic.name LIKE " . $this->quote("%$name%") ];
+        if ( $mustMatch == true ) $query = [ "item_basic.name = " . $this->quote($name) ];
 
         $items = $db->newSelectQueryBuilder()
             ->select( [ 'item_basic.name, item_basic.itemid' ] )
@@ -992,7 +1003,7 @@ class DatabaseQueryWrapper {
         // legs 128
         // feet 256
 
-        $query = [ "item_equipment.name LIKE '%$equipmentname%' OR item_basic.name LIKE '%$equipmentname%' OR item_basic.sortname LIKE '%$equipmentname%'"];
+        $query = [ "item_equipment.name LIKE " . $this->quote("%$equipmentname%") . " OR item_basic.name LIKE " . $this->quote("%$equipmentname%") . " OR item_basic.sortname LIKE " . $this->quote("%$equipmentname%")];
         // if ( $queryData[0] !=  '' ) {
 		// 	array_push($query, "item_equipment.name LIKE '%$queryData[0]%'");
 		// }
@@ -1003,7 +1014,7 @@ class DatabaseQueryWrapper {
 
         if ( $slot != 0 ){
             if ( $slot == 1){ $q = "( item_equipment.slot = 1 OR item_equipment.slot = 3 )"; }
-            else $q = "item_equipment.slot = '$slot'" ;
+            else $q = "item_equipment.slot = " . $this->quote($slot) ;
             array_push($query, $q);
         }
 
@@ -1061,7 +1072,7 @@ class DatabaseQueryWrapper {
 
     public function getItem( $itemid ){
         $dbr = $this->openLSBSearchConnection();
-        $query = [ "item_basic.itemId = '$itemid'" ];
+        $query = [ "item_basic.itemId = " . $this->quote($itemid) ];
 
         return $dbr->newSelectQueryBuilder()
         ->select( [ 'item_basic.name AS showname',
@@ -1090,7 +1101,7 @@ class DatabaseQueryWrapper {
      */
     public function getFullItem( $itemid ){
         $dbr = $this->openLSBSearchConnection();
-        $query = [ "item_basic.itemId = '$itemid'" ];
+        $query = [ "item_basic.itemId = " . $this->quote($itemid) ];
 
         return $dbr->newSelectQueryBuilder()
         ->select( [ 'item_basic.itemid',
@@ -1166,7 +1177,7 @@ class DatabaseQueryWrapper {
 
         $mjobLabel = strtolower(HXI_Variables::$jobArrayByID[$mjob]);
 
-        $query = [ "skill_ranks.skillid = '$skill'" ];        
+        $query = [ "skill_ranks.skillid = " . $this->quote($skill) ];        
 
         $results = $dbr->newSelectQueryBuilder()
         ->select( [ $mjobLabel ] )
@@ -1183,9 +1194,9 @@ class DatabaseQueryWrapper {
     public function getSkillCap( $mLvl, $rank ){
         $dbr = $this->openLSBSearchConnection();
 
-        $rank = "r" . $rank;
+        $rank = "r" . intval($rank);
 
-        $query = [ "skill_caps.level = '$mLvl'" ];
+        $query = [ "skill_caps.level = " . $this->quote($mLvl) ];
 
         $results = $dbr->newSelectQueryBuilder()
         ->select( [ $rank ] )
@@ -1205,7 +1216,7 @@ class DatabaseQueryWrapper {
 
         $mlvl = intval($mlvl);
 
-        $query = [  "item_equipment.name LIKE '%$name%' OR item_basic.name LIKE '%$name%' OR item_basic.sortname LIKE '%$name%'",
+        $query = [  "item_equipment.name LIKE " . $this->quote("%$name%") . " OR item_basic.name LIKE " . $this->quote("%$name%") . " OR item_basic.sortname LIKE " . $this->quote("%$name%"),
                     "item_equipment.level <= $mlvl"
         ];
 
@@ -1335,21 +1346,21 @@ class DatabaseQueryWrapper {
             $bait = ParserHelper::replaceSpaces($bait);
             $bait = ParserHelper::replaceApostrophe($bait);
 
-            array_push($query, "fishing_bait.name LIKE '%$bait%'");
+            array_push($query, "fishing_bait.name LIKE " . $this->quote("%$bait%"));
         }
         if ( !is_null($fish) && $fish != "") {
             $fish =  strtolower($fish);
             $fish = ParserHelper::replaceSpaces($fish);
             $fish = ParserHelper::replaceApostrophe($fish);
 
-            array_push($query, "fishing_fish.name LIKE '%$fish%'");
+            array_push($query, "fishing_fish.name LIKE " . $this->quote("%$fish%"));
         }
         if ( !is_null($zone) && $zone != "searchallzones") {
             //$zone =  strtolower($zone);
             $zone = ParserHelper::replaceSpaces($zone);
             $zone = ParserHelper::replaceApostrophe($zone); 
 
-            array_push($query, "fishing_zone.name LIKE '%$zone%'");
+            array_push($query, "fishing_zone.name LIKE " . $this->quote("%$zone%"));
         }
         //throw new Exception( json_encode($query));
         return $dbr->newSelectQueryBuilder()
@@ -1412,7 +1423,7 @@ class DatabaseQueryWrapper {
         $chars = $dbr->newSelectQueryBuilder()
         ->select( [ 'charname', 'charid', 'race', 'merits', 'def' ] )
         ->from( 'user_chars' )
-        ->where( [ "user_chars.userid = $uid" ] )
+        ->where( [ "user_chars.userid = " . intval($uid) ] )
         ->fetchResultSet();
 
         $userCharacters = [];
@@ -1478,7 +1489,7 @@ class DatabaseQueryWrapper {
         $charname = $char->charname;
 
         $query = [
-            "user_chars.userid = '$uid' AND user_chars.charname = '$charname'",
+            "user_chars.userid = " . $this->quote($uid) . " AND user_chars.charname = " . $this->quote($charname),
         ];
 
         $result = $dbr->newSelectQueryBuilder()
@@ -1503,7 +1514,7 @@ class DatabaseQueryWrapper {
     public function getDefaultCharacter($uid){
         $dbr = $this->openEquipsetsConnection();
 
-        $query = [ "user_chars.userid = '$uid' AND user_chars.def = 1"];
+        $query = [ "user_chars.userid = " . $this->quote($uid) . " AND user_chars.def = 1"];
 
         $result = $dbr->newSelectQueryBuilder()
         ->select( [ 'charname', 'charid', 'race', 'merits', 'def'] )
@@ -1563,7 +1574,7 @@ class DatabaseQueryWrapper {
         //->select( [ 'usersetid', 'mlvl', 'slvl', 'mjob', 'sjob', 'equipment', 'setname'] )
         ->select( [ 'usersetid', 'setname', 'mjob'] )
         ->from( 'user_sets' )
-        ->where( [ "user_sets.userid = $uid" ] )
+        ->where( [ "user_sets.userid = " . intval($uid) ] )
         ->orderBy( 'mjob', 'ASC' )
         ->fetchResultSet();
 
@@ -1588,7 +1599,7 @@ class DatabaseQueryWrapper {
         $dbr = $this->openEquipsetsConnection();
 
         $query = [
-            "user_sets.mjob = '$mjob' AND user_sets.userid = '$uid'"
+            "user_sets.mjob = " . $this->quote($mjob) . " AND user_sets.userid = " . $this->quote($uid)
         ];
 
         $savedSets = $dbr->newSelectQueryBuilder()
@@ -1656,7 +1667,7 @@ class DatabaseQueryWrapper {
         $fetchedSet = $dbr->newSelectQueryBuilder()
         ->select( [ 'usersetid', 'mlvl', 'slvl', 'mjob', 'sjob', 'equipment'] )
         ->from( 'user_sets' )
-        ->where( [ "user_sets.usersetid = $usersetid" ] )
+        ->where( [ "user_sets.usersetid = " . intval($usersetid) ] )
         ->fetchResultSet();
 
         //$set = [];
