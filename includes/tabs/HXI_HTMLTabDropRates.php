@@ -37,10 +37,10 @@ class HXI_HTMLTabDropRates {
                     <tr><td>
                         <table><tbody>
                         <tr>
-                            <td>Mob/BCNM Name<br><input class=\"HXI_dynamiccontent_textinput\" name=\"mobNameSearch\" value=\"$this->mobName\" size=\"25\"></td>
+                            <td>Mob/BCNM Name<br><input class=\"HXI_dynamiccontent_textinput\" name=\"mobNameSearch\" value=\"" . htmlspecialchars( (string)$this->mobName, ENT_QUOTES ) . "\" size=\"25\"></td>
                         </tr>
                         <tr>
-                            <td>Item Name<br><input class=\"HXI_dynamiccontent_textinput\" name=\"itemNameSearch\" value=\"$this->itemName\" size=\"25\"></td>
+                            <td>Item Name<br><input class=\"HXI_dynamiccontent_textinput\" name=\"itemNameSearch\" value=\"" . htmlspecialchars( (string)$this->itemName, ENT_QUOTES ) . "\" size=\"25\"></td>
                         </tr>
                         <tr>
                             <td>Zone<br>" . HXI_HTMLOptions::zonesDropDown() . "<br><br><button id=\"HXI_dynamiccontent_searchDropRatesSubmit\" class=\"HXI_dynamiccontent_customButton\">Search</button></td>
